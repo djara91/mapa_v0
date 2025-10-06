@@ -1,1 +1,388 @@
-
+{
+  "layers": [
+    {
+      "id": "predios-araucania",
+      "name": "Predios Araucanía",
+      "category": "Predios",
+      "tilesetId": "djarav91.3j46o3kh",
+      "sourceLayer": "predios_araucania-d3cw1d",
+      "type": "fill",
+      "paint": {
+        "fill-color": "#8b5cf6",
+        "fill-opacity": 0.4,
+        "fill-outline-color": "#6d28d9"
+      },
+      "popupFields": [
+        { "field": "comuna", "label": "Comuna" },
+        { "field": "area_metros2", "label": "Área (m²)" }
+      ]
+    },
+    {
+      "id": "predios-antofagasta",
+      "name": "Predios Antofagasta",
+      "category": "Predios",
+      "tilesetId": "djarav91.c1r3ealb",
+      "sourceLayer": "predios_antofagasta-as3bzw",
+      "type": "fill",
+      "paint": {
+        "fill-color": "#a78bfa",
+        "fill-opacity": 0.4,
+        "fill-outline-color": "#7c3aed"
+      },
+      "popupFields": [
+        { "field": "comuna", "label": "Comuna" },
+        { "field": "area_metros2", "label": "Área (m²)" }
+      ]
+    },
+    {
+      "id": "predios-magallanes",
+      "name": "Predios Magallanes",
+      "category": "Predios",
+      "tilesetId": "djarav91.dw89gmxz",
+      "sourceLayer": "predios_magallanes-5ydzq2",
+      "type": "fill",
+      "paint": {
+        "fill-color": "#c4b5fd",
+        "fill-opacity": 0.4,
+        "fill-outline-color": "#8b5cf6"
+      },
+      "popupFields": [
+        { "field": "comuna", "label": "Comuna" },
+        { "field": "area_metros2", "label": "Área (m²)" }
+      ]
+    },
+    {
+      "id": "minas-abandonadas",
+      "name": "Minas Abandonadas",
+      "category": "Minería",
+      "tilesetId": "djarav91.1sr0ur4o",
+      "sourceLayer": "minas_abandonadas-2k3oqh",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 6,
+        "circle-color": "#dc2626",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "nombre_faena", "label": "Nombre Faena" },
+        { "field": "nombre_empresa", "label": "Empresa" },
+        { "field": "comuna_faena", "label": "Comuna" },
+        { "field": "nombre_instalacion", "label": "Instalación" },
+        { "field": "tipo_instalacion", "label": "Tipo Instalación" },
+        { "field": "recurso_principal", "label": "Recurso Principal" },
+        { "field": "estado", "label": "Estado" }
+      ]
+    },
+    {
+      "id": "yacimientos-mineros",
+      "name": "Yacimientos Mineros",
+      "category": "Minería",
+      "tilesetId": "djarav91.8jjzpdva",
+      "sourceLayer": "yacimientos_mineros-2f6y2t",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 7,
+        "circle-color": "#f59e0b",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "nombre", "label": "Nombre" },
+        { "field": "tipo_recur", "label": "Tipo Recurso" },
+        { "field": "grupo_recu", "label": "Grupo Recurso" },
+        { "field": "tamaño_yac", "label": "Tamaño Yacimiento" },
+        { "field": "actividad_", "label": "Actividad" },
+        { "field": "propietari", "label": "Propietario" },
+        { "field": "observacio", "label": "Observación" },
+        { "field": "comuna", "label": "Comuna" }
+      ]
+    },
+    {
+      "id": "socioterritorial-relaves",
+      "name": "Estudio Socioterritorial de Relaves",
+      "category": "Minería",
+      "tilesetId": "djarav91.3f111u9l",
+      "sourceLayer": "socioterritorial_relaves-3382fu",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 6,
+        "circle-color": "#ea580c",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "name instalation", "label": "Nombre Instalación" },
+        { "field": "municipalities", "label": "Municipalidad" }
+      ]
+    },
+    {
+      "id": "geoquimica-relaves",
+      "name": "Geoquímica de Relaves",
+      "category": "Minería",
+      "tilesetId": "djarav91.3jcbqus1",
+      "sourceLayer": "geoquimica_relaves-512o2z",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 6,
+        "circle-color": "#fb923c",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "empresa o dueno", "label": "Empresa/Dueño" },
+        { "field": "faena", "label": "Faena" },
+        { "field": "deposito", "label": "Depósito" },
+        { "field": "recurso", "label": "Recurso" },
+        { "field": "estado", "label": "Estado" },
+        { "field": "origen", "label": "Origen" },
+        { "field": "comuna", "label": "Comuna" }
+      ]
+    },
+    {
+      "id": "catastro-relaves",
+      "name": "Catastro de Relaves",
+      "category": "Minería",
+      "tilesetId": "djarav91.701mn9ag",
+      "sourceLayer": "catastro_relaves-4lfctk",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 6,
+        "circle-color": "#d97706",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "nombre_empresa_o_productor_minero", "label": "Empresa" },
+        { "field": "nombre_faena", "label": "Nombre Faena" },
+        { "field": "comuna", "label": "Comuna" },
+        { "field": "nombre_instalacion", "label": "Instalación" },
+        { "field": "tipo_deposito", "label": "Tipo Depósito" },
+        { "field": "recurso", "label": "Recurso" },
+        { "field": "tipo_mineria", "label": "Tipo Minería" },
+        { "field": "estado_instalacion", "label": "Estado" },
+        { "field": "metodo_constructivo_muro", "label": "Método Constructivo" }
+      ]
+    },
+    {
+      "id": "red-aeroportuaria",
+      "name": "Red Aeroportuaria",
+      "category": "Infraestructura",
+      "tilesetId": "djarav91.7t6njre4",
+      "sourceLayer": "red_aeroportuaria-a9fyuv",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 7,
+        "circle-color": "#0ea5e9",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "administra", "label": "Administrador" },
+        { "field": "nombre", "label": "Nombre" },
+        { "field": "comuna", "label": "Comuna" },
+        { "field": "localidad", "label": "Localidad" },
+        { "field": "red", "label": "Red" },
+        { "field": "tipo", "label": "Tipo" },
+        { "field": "uso", "label": "Uso" },
+        { "field": "propiedad", "label": "Propiedad" },
+        { "field": "cod_oaci", "label": "Código OACI" }
+      ]
+    },
+    {
+      "id": "puentes",
+      "name": "Puentes",
+      "category": "Infraestructura",
+      "tilesetId": "djarav91.3jvviqv6",
+      "sourceLayer": "puentes-1403sw",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 6,
+        "circle-color": "#06b6d4",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "nombre_pue", "label": "Nombre Puente" },
+        { "field": "nombre_cam", "label": "Nombre Camino" },
+        { "field": "piso", "label": "Piso" },
+        { "field": "est_puente", "label": "Estado Puente" },
+        { "field": "tipo_estru", "label": "Tipo Estructura" },
+        { "field": "provincia", "label": "Provincia" }
+      ]
+    },
+    {
+      "id": "ciclovias",
+      "name": "Ciclovías",
+      "category": "Infraestructura",
+      "tilesetId": "djarav91.cizyhgi0",
+      "sourceLayer": "ciclovias-b8d470",
+      "type": "line",
+      "paint": {
+        "line-color": "#10b981",
+        "line-width": 3,
+        "line-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "comuna", "label": "Comuna" },
+        { "field": "eje_via", "label": "Eje Vía" },
+        { "field": "km", "label": "Kilómetros" },
+        { "field": "tipo", "label": "Tipo" },
+        { "field": "carac_func", "label": "Característica Funcional" },
+        { "field": "emplaza_te", "label": "Emplazamiento" },
+        { "field": "etapa", "label": "Etapa" },
+        { "field": "etapa_det", "label": "Detalle Etapa" },
+        { "field": "cartera", "label": "Cartera" }
+      ]
+    },
+    {
+      "id": "estaciones-servicio",
+      "name": "Estaciones de Servicio",
+      "category": "Infraestructura",
+      "tilesetId": "djarav91.dxxxpf11",
+      "sourceLayer": "estaciones_servicio-2gbr05",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 6,
+        "circle-color": "#14b8a6",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "distribuid", "label": "Distribuidor" },
+        { "field": "calle", "label": "Calle" },
+        { "field": "numero", "label": "Número" },
+        { "field": "comuna", "label": "Comuna" },
+        { "field": "ben_93", "label": "Bencina 93" },
+        { "field": "ben_95", "label": "Bencina 95" },
+        { "field": "ben_97", "label": "Bencina 97" },
+        { "field": "diesel", "label": "Diesel" },
+        { "field": "glp", "label": "GLP" },
+        { "field": "gnc", "label": "GNC" },
+        { "field": "kerosene", "label": "Kerosene" }
+      ]
+    },
+    {
+      "id": "educacion-parvularia",
+      "name": "Establecimientos Ed. Parvularia",
+      "category": "Educación",
+      "tilesetId": "djarav91.9kpqrlt6",
+      "sourceLayer": "educacion_parvularia-bieolz",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 6,
+        "circle-color": "#3b82f6",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "nom_estab", "label": "Nombre Establecimiento" },
+        { "field": "nom_com_es", "label": "Comuna" },
+        { "field": "direccion", "label": "Dirección" },
+        { "field": "numero", "label": "Número" }
+      ]
+    },
+    {
+      "id": "educacion-escolar",
+      "name": "Establecimientos Ed. Escolar",
+      "category": "Educación",
+      "tilesetId": "djarav91.5qsfpd17",
+      "sourceLayer": "educacion_escolar-5gjq7k",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 6,
+        "circle-color": "#2563eb",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "nom_rbd", "label": "Nombre RBD" },
+        { "field": "nom_com_rb", "label": "Comuna" },
+        { "field": "direccion", "label": "Dirección" },
+        { "field": "numero", "label": "Número" }
+      ]
+    },
+    {
+      "id": "educacion-superior",
+      "name": "Establecimientos Ed. Superior",
+      "category": "Educación",
+      "tilesetId": "djarav91.1m8w7uhs",
+      "sourceLayer": "educacion_superior-defplc",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 7,
+        "circle-color": "#1d4ed8",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "tipo_inst", "label": "Tipo Institución" },
+        { "field": "nombre_ins", "label": "Nombre Institución" },
+        { "field": "nombre_inm", "label": "Nombre Inmueble" },
+        { "field": "comuna", "label": "Comuna" },
+        { "field": "direccion", "label": "Dirección" },
+        { "field": "numero", "label": "Número" }
+      ]
+    },
+    {
+      "id": "directorio-educacion",
+      "name": "Directorio Oficial Est. Educación",
+      "category": "Educación",
+      "tilesetId": "djarav91.dydbrgue",
+      "sourceLayer": "directorio_educacion-6v38jv",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 5,
+        "circle-color": "#60a5fa",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "nom_rbd", "label": "Nombre RBD" },
+        { "field": "nom_com_rbd", "label": "Comuna" },
+        { "field": "mat_total", "label": "Matrícula Total" },
+        { "field": "pago_matricula", "label": "Pago Matrícula" },
+        { "field": "pago_mensual", "label": "Pago Mensual" }
+      ]
+    },
+    {
+      "id": "establecimientos-salud",
+      "name": "Establecimientos de Salud",
+      "category": "Salud",
+      "tilesetId": "djarav91.2ys756q3",
+      "sourceLayer": "establecimientos_salud-bzrouy",
+      "type": "circle",
+      "paint": {
+        "circle-radius": 7,
+        "circle-color": "#10b981",
+        "circle-stroke-width": 2,
+        "circle-stroke-color": "#ffffff",
+        "circle-opacity": 0.8
+      },
+      "popupFields": [
+        { "field": "establecimientoglosa", "label": "Establecimiento" },
+        { "field": "seremisaludglosa_serviciodesaludglosa", "label": "SEREMI/Servicio Salud" },
+        { "field": "tipoestablecimientoglosa", "label": "Tipo Establecimiento" },
+        { "field": "dependenciaadministrativa", "label": "Dependencia Administrativa" },
+        { "field": "nivelatencionestabglosa", "label": "Nivel Atención" },
+        { "field": "comunaglosa", "label": "Comuna" },
+        { "field": "tipourgencia", "label": "Tipo Urgencia" },
+        { "field": "estadofuncionamiento", "label": "Estado Funcionamiento" },
+        { "field": "nivelcomplejidadestabglosa", "label": "Nivel Complejidad" },
+        { "field": "tipoatencionestabglosa", "label": "Tipo Atención" }
+      ]
+    }
+  ]
+}
