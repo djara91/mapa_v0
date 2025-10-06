@@ -207,6 +207,23 @@ function addLayer(layer) {
         map.addLayer(layerConfig);
         console.log('✅ Capa renderizada en el mapa:', layer.name);
         
+        // Si es un polígono (fill), agregar también el borde
+        if (layer.type === 'fill') {
+            const lineLayerConfig = {
+                id: layer.id + '-outline',
+                type: 'line',
+                source: layer.id,
+                'source-layer': layer.sourceLayer,
+                paint: {
+                    'line-color': layer.paint['fill-color'] || '#8b5cf6',
+                    'line-width': 2,
+                    'line-opacity': 0.8
+                }
+            };
+            map.addLayer(lineLayerConfig);
+            console.log('✅ Borde agregado para:', layer.name);
+        }
+        
         addLayerInteractivity(layer);
         
     } catch (error) {
@@ -219,6 +236,10 @@ function addLayer(layer) {
 function removeLayer(layerId) {
     if (map.getLayer(layerId)) {
         map.removeLayer(layerId);
+    }
+    // Remover también el borde si existe
+    if (map.getLayer(layerId + '-outline')) {
+        map.removeLayer(layerId + '-outline');
     }
 }
 
