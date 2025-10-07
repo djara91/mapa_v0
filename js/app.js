@@ -508,6 +508,12 @@ map.on('load', () => {
   
   // Evento de click global para todas las capas
   map.on('click', (e) => {
+    // Cerrar popups existentes primero
+    const existingPopups = document.getElementsByClassName('mapboxgl-popup');
+    while(existingPopups[0]) {
+      existingPopups[0].remove();
+    }
+    
     // Obtener todas las capas visibles
     const visibleLayers = config.layers
       .filter(layer => map.getLayoutProperty(layer.id, 'visibility') === 'visible')
@@ -605,7 +611,17 @@ function createLayerItem(layer) {
 }
 
 function createMultiPopup(features, lngLat) {
-  let popupHTML = '<div style="display: flex; flex-direction: column; height: 100%;">';
+  let popupHTML = '';
+  
+  // Header principal con contador si hay múltiples features
+  if (features.length > 1) {
+    popupHTML += `<div class="popup-main-header">
+      ${features.length} elementos en esta ubicación
+    </div>`;
+  }
+  
+  // Un solo contenedor con scroll para TODO el contenido
+  popupHTML += '<div class="popup-scroll-container">';
   
   features.forEach((feature, index) => {
     // Encontrar la configuración de la capa
@@ -614,12 +630,25 @@ function createMultiPopup(features, lngLat) {
     
     const properties = feature.properties;
     
-    // Agregar separador entre features
+    // Agregar separador entre features (excepto antes del primero)
     if (index > 0) {
       popupHTML += '<div class="popup-separator"></div>';
     }
     
-    popupHTML += `<div class="popup-header">${layer.name}</div><div class="popup-body">`;
+    // Obtener color de la capa
+    let layerColor = '#ffffff';
+    if (layer.type === 'circle') layerColor = layer.paint['circle-color'];
+    else if (layer.type === 'fill') layerColor = layer.paint['fill-color'];
+    else if (layer.type === 'line') layerColor = layer.paint['line-color'];
+    
+    // Header de cada feature (sin scroll propio)
+    popupHTML += `<div class="popup-section-header">
+      <span style="color: ${layerColor}; font-size: 16px;">●</span> 
+      <span style="margin-left: 8px;">${layer.name}</span>
+    </div>`;
+    
+    // Contenido de la feature
+    popupHTML += '<div class="popup-section-content">';
     
     layer.popupFields.forEach(fieldConfig => {
       const value = properties[fieldConfig.field];
@@ -633,13 +662,13 @@ function createMultiPopup(features, lngLat) {
       }
     });
     
-    popupHTML += '</div>';
+    popupHTML += '</div>'; // Cierra popup-section-content
   });
   
-  popupHTML += '</div>';
+  popupHTML += '</div>'; // Cierra popup-scroll-container
   
   new mapboxgl.Popup({ 
-    maxWidth: '320px',
+    maxWidth: '340px',
     closeButton: true,
     closeOnClick: false
   })
