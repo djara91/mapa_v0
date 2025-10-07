@@ -611,8 +611,32 @@ function createPopup(feature, layer) {
   
   popupHTML += '</div>';
   
+  // Obtener coordenadas según el tipo de geometría
+  let coordinates;
+  if (feature.geometry.type === 'Point') {
+    coordinates = feature.geometry.coordinates;
+  } else if (feature.geometry.type === 'LineString') {
+    // Para líneas, usar el punto medio
+    const coords = feature.geometry.coordinates;
+    const midIndex = Math.floor(coords.length / 2);
+    coordinates = coords[midIndex];
+  } else if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
+    // Para polígonos, usar el centroide aproximado del primer anillo
+    const coords = feature.geometry.type === 'Polygon' 
+      ? feature.geometry.coordinates[0] 
+      : feature.geometry.coordinates[0][0];
+    
+    // Calcular centroide simple
+    let sumLng = 0, sumLat = 0;
+    coords.forEach(coord => {
+      sumLng += coord[0];
+      sumLat += coord[1];
+    });
+    coordinates = [sumLng / coords.length, sumLat / coords.length];
+  }
+  
   new mapboxgl.Popup()
-    .setLngLat(feature.geometry.coordinates)
+    .setLngLat(coordinates)
     .setHTML(popupHTML)
     .addTo(map);
 }
