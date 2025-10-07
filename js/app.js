@@ -471,6 +471,10 @@ Object.keys(categories).forEach(categoryName => {
 
 // Cuando el mapa cargue
 map.on('load', () => {
+  // Invalida el caché
+  map.setMaxBounds(null);
+  map.setMaxBounds(map.getBounds());
+  
   // Ocultar loading
   document.getElementById('loadingOverlay').classList.add('hidden');
   
@@ -479,7 +483,7 @@ map.on('load', () => {
     // Agregar source
     map.addSource(layer.id, {
       type: 'vector',
-      url: `mapbox://${layer.tilesetId}`
+      url: `mapbox://${layer.tilesetId}?v=${new Date().getTime()}`
     });
     
     // Configurar layer según tipo
