@@ -239,11 +239,63 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-    width: 320px;
-    max-height: 400px;
+    width: 340px;
+    max-height: 450px;
     overflow: hidden;
     display: flex;
     flex-direction: column;
+}
+
+.popup-main-header {
+    background: linear-gradient(135deg, #3b82f6 0%, #1e40af 100%);
+    padding: 12px 15px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    flex-shrink: 0;
+}
+
+.popup-scroll-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 15px;
+    flex: 1;
+}
+
+.popup-scroll-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.popup-scroll-container::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.popup-scroll-container::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.popup-scroll-container::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.popup-section-header {
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.popup-section-content {
+    margin-bottom: 15px;
+}
+
+.popup-separator {
+    border-top: 2px solid rgba(255, 255, 255, 0.15);
+    margin: 15px 0;
 }
 
 .popup-header {
@@ -277,11 +329,6 @@ body {
 
 .popup-body::-webkit-scrollbar-thumb:hover {
     background: rgba(255, 255, 255, 0.3);
-}
-
-.popup-separator {
-    border-top: 2px solid rgba(255, 255, 255, 0.15);
-    margin: 15px 0;
 }
 
 .popup-row {
