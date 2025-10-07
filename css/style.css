@@ -239,8 +239,11 @@ body {
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-    max-width: 350px;
-    min-width: 250px;
+    width: 320px;
+    max-height: 400px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .popup-header {
@@ -250,13 +253,35 @@ body {
     font-weight: 600;
     color: #ffffff;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 8px 8px 0 0;
+    flex-shrink: 0;
 }
 
 .popup-body {
     padding: 12px 15px;
-    max-height: 300px;
     overflow-y: auto;
+    flex: 1;
+}
+
+.popup-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.popup-body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.popup-body::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.popup-body::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.popup-separator {
+    border-top: 2px solid rgba(255, 255, 255, 0.15);
+    margin: 15px 0;
 }
 
 .popup-row {
