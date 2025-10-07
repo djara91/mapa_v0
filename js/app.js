@@ -605,7 +605,7 @@ function createLayerItem(layer) {
 }
 
 function createMultiPopup(features, lngLat) {
-  let popupHTML = '';
+  let popupHTML = '<div style="display: flex; flex-direction: column; height: 100%;">';
   
   features.forEach((feature, index) => {
     // Encontrar la configuración de la capa
@@ -616,7 +616,7 @@ function createMultiPopup(features, lngLat) {
     
     // Agregar separador entre features
     if (index > 0) {
-      popupHTML += '<div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>';
+      popupHTML += '<div class="popup-separator"></div>';
     }
     
     popupHTML += `<div class="popup-header">${layer.name}</div><div class="popup-body">`;
@@ -636,7 +636,13 @@ function createMultiPopup(features, lngLat) {
     popupHTML += '</div>';
   });
   
-  new mapboxgl.Popup({ maxWidth: '400px' })
+  popupHTML += '</div>';
+  
+  new mapboxgl.Popup({ 
+    maxWidth: '320px',
+    closeButton: true,
+    closeOnClick: false
+  })
     .setLngLat(lngLat)
     .setHTML(popupHTML)
     .addTo(map);
