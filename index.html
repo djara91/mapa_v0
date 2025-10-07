@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mapa Interactivo - Chile</title>
+  <title>Mapa Interactivo - Capas GIS Chile</title>
   
   <!-- Mapbox GL JS -->
   <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
@@ -11,12 +11,280 @@
   
   <!-- Estilos personalizados -->
   <link rel="stylesheet" href="styles.css">
+  
+  <style>
+    /* Estilos adicionales inline por si acaso */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      background: rgba(15, 15, 15, 0.95);
+      padding: 30px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: none;
+    }
+    
+    .loading-spinner.active {
+      display: block;
+    }
+    
+    .spinner {
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top: 3px solid #3b82f6;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 15px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .loading-text {
+      color: #e5e5e5;
+      text-align: center;
+      font-size: 14px;
+    }
+    
+    /* Info box para estadísticas */
+    .info-box {
+      position: absolute;
+      bottom: 120px;
+      left: 20px;
+      background: rgba(15, 15, 15, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 15px;
+      max-width: 250px;
+      z-index: 1000;
+      display: none;
+    }
+    
+    .info-box.active {
+      display: block;
+    }
+    
+    .info-box h4 {
+      margin: 0 0 10px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    
+    .info-stat {
+      font-size: 12px;
+      color: #e5e5e5;
+      margin-bottom: 5px;
+    }
+    
+    .info-stat strong {
+      color: #3b82f6;
+    }
+    
+    /* Botón para resetear vista */
+    .reset-button {
+      position: absolute;
+      bottom: 30px;
+      left: 20px;
+      background: rgba(15, 15, 15, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px 15px;
+      color: #e5e5e5;
+      cursor: pointer;
+      font-size: 13px;
+      z-index: 1000;
+      transition: all 0.2s;
+    }
+    
+    .reset-button:hover {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: rgba(59, 130, 246, 0.5);
+    }
+    
+    /* Botón para toggle del panel */
+    .toggle-panel-btn {
+      position: absolute;
+      top: 20px;
+      right: 360px;
+      background: rgba(15, 15, 15, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      color: #e5e5e5;
+      cursor: pointer;
+      z-index: 1001;
+      transition: all 0.3s;
+    }
+    
+    .toggle-panel-btn:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+    
+    .control-panel.hidden {
+      transform: translateX(360px);
+    }
+    
+    .toggle-panel-btn.panel-hidden {
+      right: 20px;
+    }
+  </style>
 </head>
 <body>
+  <!-- Mapa -->
   <div id="map"></div>
+  
+  <!-- Loading spinner -->
+  <div class="loading-spinner" id="loadingSpinner">
+    <div class="spinner"></div>
+    <div class="loading-text">Cargando mapa...</div>
+  </div>
+  
+  <!-- Botón para toggle del panel -->
+  <button class="toggle-panel-btn" id="togglePanelBtn">
+    ◀
+  </button>
+  
+  <!-- Botón para resetear vista -->
+  <button class="reset-button" id="resetButton">
+    🏠 Resetear vista
+  </button>
+  
+  <!-- Info box para estadísticas -->
+  <div class="info-box" id="infoBox">
+    <h4>Estadísticas del mapa</h4>
+    <div class="info-stat"><strong>Capas activas:</strong> <span id="activeLayers">0</span></div>
+    <div class="info-stat"><strong>Zoom actual:</strong> <span id="currentZoom">5</span></div>
+    <div class="info-stat"><strong>Centro:</strong> <span id="currentCenter">-71.54, -33.05</span></div>
+  </div>
   
   <!-- Scripts -->
   <script src="config.js"></script>
   <script src="app.js"></script>
+  
+  <script>
+    // Funcionalidad adicional del HTML
+    
+    // Mostrar loading al inicio
+    document.addEventListener('DOMContentLoaded', () => {
+      const spinner = document.getElementById('loadingSpinner');
+      spinner.classList.add('active');
+    });
+    
+    // Ocultar loading cuando el mapa cargue
+    map.on('load', () => {
+      const spinner = document.getElementById('loadingSpinner');
+      setTimeout(() => {
+        spinner.classList.remove('active');
+      }, 500);
+    });
+    
+    // Toggle del panel lateral
+    const toggleBtn = document.getElementById('togglePanelBtn');
+    const panel = document.querySelector('.control-panel');
+    
+    toggleBtn.addEventListener('click', () => {
+      panel.classList.toggle('hidden');
+      toggleBtn.classList.toggle('panel-hidden');
+      toggleBtn.textContent = panel.classList.contains('hidden') ? '▶' : '◀';
+    });
+    
+    // Botón de resetear vista
+    document.getElementById('resetButton').addEventListener('click', () => {
+      map.flyTo({
+        center: CONFIG.center,
+        zoom: CONFIG.zoom,
+        duration: 2000
+      });
+    });
+    
+    // Actualizar estadísticas del mapa
+    function updateMapStats() {
+      const activeCount = CONFIG.tilesets.filter(t => {
+        const layer = map.getLayer(t.id);
+        return layer && map.getLayoutProperty(t.id, 'visibility') === 'visible';
+      }).length;
+      
+      document.getElementById('activeLayers').textContent = activeCount;
+      document.getElementById('currentZoom').textContent = map.getZoom().toFixed(2);
+      
+      const center = map.getCenter();
+      document.getElementById('currentCenter').textContent = 
+        `${center.lng.toFixed(2)}, ${center.lat.toFixed(2)}`;
+    }
+    
+    // Actualizar estadísticas cada vez que el mapa se mueva
+    map.on('move', updateMapStats);
+    map.on('zoom', updateMapStats);
+    
+    // Mostrar info box después de cargar
+    map.on('load', () => {
+      setTimeout(() => {
+        document.getElementById('infoBox').classList.add('active');
+        updateMapStats();
+      }, 1000);
+    });
+    
+    // Manejo de errores
+    map.on('error', (e) => {
+      console.error('Error en el mapa:', e);
+      const spinner = document.getElementById('loadingSpinner');
+      spinner.querySelector('.loading-text').textContent = 'Error al cargar el mapa';
+      spinner.querySelector('.spinner').style.display = 'none';
+    });
+    
+    // Manejo de teclas de atajo
+    document.addEventListener('keydown', (e) => {
+      // ESC para cerrar popups
+      if (e.key === 'Escape') {
+        const popups = document.getElementsByClassName('mapboxgl-popup');
+        Array.from(popups).forEach(popup => popup.remove());
+      }
+      
+      // H para ocultar/mostrar panel
+      if (e.key === 'h' || e.key === 'H') {
+        toggleBtn.click();
+      }
+      
+      // R para resetear vista
+      if (e.key === 'r' || e.key === 'R') {
+        document.getElementById('resetButton').click();
+      }
+      
+      // I para mostrar/ocultar info box
+      if (e.key === 'i' || e.key === 'I') {
+        document.getElementById('infoBox').classList.toggle('active');
+      }
+    });
+    
+    // Log de información útil
+    console.log('%c🗺️ Mapa GIS de Chile', 'font-size: 20px; font-weight: bold; color: #3b82f6;');
+    console.log('%cTeclas de atajo:', 'font-weight: bold;');
+    console.log('  H - Ocultar/Mostrar panel');
+    console.log('  R - Resetear vista');
+    console.log('  I - Mostrar/Ocultar info box');
+    console.log('  ESC - Cerrar popups');
+    console.log('%cTotal de capas:', 'font-weight: bold;', CONFIG.tilesets.length);
+  </script>
 </body>
 </html>
