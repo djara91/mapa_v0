@@ -496,13 +496,6 @@ map.on('load', () => {
     
     map.addLayer(layerConfig);
     
-    // Agregar eventos de click para popups
-    map.on('click', layer.id, (e) => {
-      if (e.features.length > 0) {
-        createPopup(e.features[0], layer);
-      }
-    });
-    
     // Cambiar cursor
     map.on('mouseenter', layer.id, () => {
       map.getCanvas().style.cursor = 'pointer';
@@ -511,6 +504,25 @@ map.on('load', () => {
     map.on('mouseleave', layer.id, () => {
       map.getCanvas().style.cursor = '';
     });
+  });
+  
+  // Evento de click global para todas las capas
+  map.on('click', (e) => {
+    // Obtener todas las capas visibles
+    const visibleLayers = config.layers
+      .filter(layer => map.getLayoutProperty(layer.id, 'visibility') === 'visible')
+      .map(layer => layer.id);
+    
+    if (visibleLayers.length === 0) return;
+    
+    // Buscar features en todas las capas visibles
+    const features = map.queryRenderedFeatures(e.point, {
+      layers: visibleLayers
+    });
+    
+    if (features.length > 0) {
+      createMultiPopup(features, e.lngLat);
+    }
   });
   
   console.log('Mapa cargado correctamente con', config.layers.length, 'capas');
@@ -590,6 +602,44 @@ function createLayerItem(layer) {
   item.appendChild(label);
   
   return item;
+}
+
+function createMultiPopup(features, lngLat) {
+  let popupHTML = '';
+  
+  features.forEach((feature, index) => {
+    // Encontrar la configuración de la capa
+    const layer = config.layers.find(l => l.id === feature.layer.id);
+    if (!layer) return;
+    
+    const properties = feature.properties;
+    
+    // Agregar separador entre features
+    if (index > 0) {
+      popupHTML += '<div style="border-top: 1px solid rgba(255,255,255,0.1); margin: 10px 0;"></div>';
+    }
+    
+    popupHTML += `<div class="popup-header">${layer.name}</div><div class="popup-body">`;
+    
+    layer.popupFields.forEach(fieldConfig => {
+      const value = properties[fieldConfig.field];
+      if (value !== undefined && value !== null && value !== '') {
+        popupHTML += `
+          <div class="popup-row">
+            <span class="popup-label">${fieldConfig.label}:</span>
+            <span class="popup-value">${value}</span>
+          </div>
+        `;
+      }
+    });
+    
+    popupHTML += '</div>';
+  });
+  
+  new mapboxgl.Popup({ maxWidth: '400px' })
+    .setLngLat(lngLat)
+    .setHTML(popupHTML)
+    .addTo(map);
 }
 
 function createPopup(feature, layer) {
