@@ -471,10 +471,6 @@ Object.keys(categories).forEach(categoryName => {
 
 // Cuando el mapa cargue
 map.on('load', () => {
-  // Invalida el caché
-  map.setMaxBounds(null);
-  map.setMaxBounds(map.getBounds());
-  
   // Ocultar loading
   document.getElementById('loadingOverlay').classList.add('hidden');
   
