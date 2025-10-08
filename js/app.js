@@ -725,3 +725,424 @@ function createPopup(feature, layer) {
     .setHTML(popupHTML)
     .addTo(map);
 }
+
+// ==========================================
+// SISTEMA DE FILTROS POR COMUNA 
+// ==========================================
+
+// Lista completa de comunas de Chile
+const comunasChile = [
+  // REGIÓN DE ARICA Y PARINACOTA
+    "Arica", "Camarones", "General Lagos", "Putre",
+  
+  // REGIÓN DE TARAPACÁ
+    "Alto Hospicio", "Camiña", "Colchane", "Huara", "Iquique", "Pica", "Pozo Almonte",
+  
+  // REGIÓN DE ANTOFAGASTA
+    "Antofagasta", "Calama", "María Elena", "Mejillones", "Ollagüe", "San Pedro de Atacama", 
+    "Sierra Gorda", "Taltal", "Tocopilla",
+  
+  // REGIÓN DE ATACAMA
+    "Alto del Carmen", "Caldera", "Chañaral", "Copiapó", "Diego de Almagro", "Freirina", 
+    "Huasco", "Tierra Amarilla", "Vallenar",
+  
+  // REGIÓN DE COQUIMBO
+    "Andacollo", "Canela", "Combarbalá", "Coquimbo", "Illapel", "La Higuera", "La Serena", 
+    "Los Vilos", "Monte Patria", "Ovalle", "Paiguano", "Punitaqui", "Río Hurtado", 
+    "Salamanca", "Vicuña",
+  
+  // REGIÓN DE VALPARAÍSO
+    "Algarrobo", "Cabildo", "Calera", "Calle Larga", "Cartagena", "Casablanca", "Catemu", 
+    "Concón", "El Quisco", "El Tabo", "Hijuelas", "Isla de Pascua", "Juan Fernández", 
+    "La Cruz", "La Ligua", "Limache", "Llaillay", "Los Andes", "Nogales", "Olmué", 
+    "Panquehue", "Papudo", "Petorca", "Puchuncaví", "Putaendo", "Quillota", "Quilpué", 
+    "Quintero", "Rinconada", "San Antonio", "San Esteban", "San Felipe", "Santa María", 
+    "Santo Domingo", "Valparaíso", "Villa Alemana", "Viña del Mar", "Zapallar",
+  
+  // REGIÓN METROPOLITANA
+    "Alhué", "Buin", "Calera de Tango", "Cerrillos", "Cerro Navia", "Colina", "Conchalí", 
+    "Curacaví", "El Bosque", "El Monte", "Estación Central", "Huechuraba", "Independencia", 
+    "Isla de Maipo", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", 
+    "Lampa", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", 
+    "María Pinto", "Melipilla", "Ñuñoa", "Padre Hurtado", "Paine", "Pedro Aguirre Cerda", 
+    "Peñaflor", "Peñalolén", "Pirque", "Providencia", "Pudahuel", "Puente Alto", 
+    "Quilicura", "Quinta Normal", "Recoleta", "Renca", "San Bernardo", "San Joaquín", 
+    "San José de Maipo", "San Miguel", "San Pedro", "San Ramón", "Santiago", "Talagante", 
+    "Tiltil", "Vitacura",
+  
+  // REGIÓN DEL LIBERTADOR GENERAL BERNARDO O'HIGGINS
+    "Chépica", "Chimbarongo", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", 
+    "La Estrella", "Las Cabras", "Litueche", "Lolol", "Machalí", "Malloa", "Marchihue", 
+    "Nancagua", "Navidad", "Olivar", "Palmilla", "Paredones", "Peralillo", "Peumo", 
+    "Pichidegua", "Pichilemu", "Placilla", "Pumanque", "Quinta de Tilcoco", "Rancagua", 
+    "Rengo", "Requínoa", "San Fernando", "San Vicente", "Santa Cruz",
+  
+  // REGIÓN DEL MAULE
+    "Cauquenes", "Chanco", "Colbún", "Constitución", "Curepto", "Curicó", "Empedrado", 
+    "Hualañé", "Licantén", "Linares", "Longaví", "Maule", "Molina", "Parral", "Pelarco", 
+    "Pelluhue", "Pencahue", "Rauco", "Retiro", "Río Claro", "Romeral", "Sagrada Familia", 
+    "San Clemente", "San Javier", "San Rafael", "Talca", "Teno", "Vichuquén", 
+    "Villa Alegre", "Yerbas Buenas",
+  
+  // REGIÓN DE ÑUBLE
+    "Bulnes", "Chillán", "Chillán Viejo", "Cobquecura", "Coelemu", "Coihueco", "El Carmen", 
+    "Ninhue", "Ñiquén", "Pemuco", "Pinto", "Portezuelo", "Quillón", "Quirihue", "Ránquil", 
+    "San Carlos", "San Fabián", "San Ignacio", "San Nicolás", "Treguaco", "Yungay",
+  
+  // REGIÓN DEL BIOBÍO
+    "Alto Biobío", "Antuco", "Arauco", "Cabrero", "Cañete", "Chiguayante", "Concepción", 
+    "Contulmo", "Coronel", "Curanilahue", "Florida", "Hualpén", "Hualqui", "Laja", "Lebu", 
+    "Los Álamos", "Los Ángeles", "Lota", "Mulchén", "Nacimiento", "Negrete", "Penco", 
+    "Quilaco", "Quilleco", "San Pedro de la Paz", "San Rosendo", "Santa Bárbara", 
+    "Santa Juana", "Talcahuano", "Tirúa", "Tomé", "Tucapel", "Yumbel",
+  
+  // REGIÓN DE LA ARAUCANÍA
+    "Angol", "Carahue", "Cholchol", "Collipulli", "Cunco", "Curacautín", "Curarrehue", 
+    "Ercilla", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Lonquimay", 
+    "Los Sauces", "Lumaco", "Melipeuco", "Nueva Imperial", "Padre Las Casas", "Perquenco", 
+    "Pitrufquén", "Pucón", "Purén", "Renaico", "Saavedra", "Temuco", "Teodoro Schmidt", 
+    "Toltén", "Traiguén", "Victoria", "Vilcún", "Villarrica",
+  
+  // REGIÓN DE LOS RÍOS
+    "Corral", "Futrono", "La Unión", "Lago Ranco", "Lanco", "Los Lagos", "Mariquina", 
+    "Máfil", "Paillaco", "Panguipulli", "Río Bueno", "Valdivia",
+  
+  // REGIÓN DE LOS LAGOS
+    "Ancud", "Calbuco", "Castro", "Chaitén", "Chonchi", "Cochamó", "Curaco de Vélez", 
+    "Dalcahue", "Fresia", "Frutillar", "Futaleufú", "Hualaihué", "Llanquihue", "Los Muermos", 
+    "Maullín", "Osorno", "Palena", "Puerto Montt", "Puerto Octay", "Puerto Varas", "Puqueldón", 
+    "Purranque", "Puyehue", "Queilén", "Quellón", "Quemchi", "Quinchao", "Río Negro", 
+    "San Juan de la Costa", "San Pablo",
+  
+  // REGIÓN DE AYSÉN
+    "Aysén", "Chile Chico", "Cisnes", "Cochrane", "Coyhaique", "Guaitecas", "Lago Verde", 
+    "O'Higgins", "Río Ibáñez", "Tortel",
+  
+  // REGIÓN DE MAGALLANES
+    "Antártica", "Cabo de Hornos", "Laguna Blanca", "Natales", "Porvenir", "Primavera", 
+    "Punta Arenas", "Río Verde", "San Gregorio", "Timaukel", "Torres del Paine"
+].sort();
+
+// Comunas seleccionadas
+let selectedComunas = [];
+
+// Función para obtener el nombre de columna de comuna desde popupFields
+function getComunaColumnForLayer(layer) {
+    // Si no tiene popupFields, usar 'comuna' por defecto
+    if (!layer.popupFields || layer.popupFields.length === 0) {
+        return 'comuna';
+    }
+
+    // Posibles labels que indican que es un campo de comuna
+    const comunaLabels = ['comuna', 'municipio', 'municipality', 'ciudad'];
+
+    // Buscar en popupFields el campo que tiene label "Comuna" o similar
+    const comunaField = layer.popupFields.find(fieldObj => {
+        if (fieldObj.label) {
+            const labelLower = fieldObj.label.toLowerCase();
+            return comunaLabels.some(variant => labelLower.includes(variant));
+        }
+        return false;
+    });
+
+    if (comunaField && comunaField.field) {
+        return comunaField.field;
+    }
+
+    // Fallback: buscar por nombre de campo
+    const comunaFieldByName = layer.popupFields.find(fieldObj => {
+        if (fieldObj.field) {
+            const fieldLower = fieldObj.field.toLowerCase();
+            return fieldLower.includes('comuna') || 
+                   fieldLower.includes('municipality') || 
+                   fieldLower.includes('municipalities') ||
+                   fieldLower.includes('nom_com');
+        }
+        return false;
+    });
+
+    if (comunaFieldByName && comunaFieldByName.field) {
+        return comunaFieldByName.field;
+    }
+
+    // Por defecto usar 'comuna'
+    return 'comuna';
+}
+
+// Aplicar filtros a las capas del mapa
+function applyFiltersToComunas() {
+    if (!map) {
+        console.error('❌ El mapa no está inicializado');
+        return;
+    }
+
+    // Obtener todas las capas EXCEPTO las de categoría "Predios"
+    const layersToFilter = config.layers.filter(layer => 
+        layer.category !== 'Predios'
+    );
+
+    console.log(`🔍 Aplicando filtros a ${layersToFilter.length} capas (excluyendo Predios)`);
+
+    if (selectedComunas.length === 0) {
+        // Si no hay filtros, remover filtros de todas las capas
+        layersToFilter.forEach(layer => {
+            if (map.getLayer(layer.id)) {
+                map.setFilter(layer.id, null);
+            }
+        });
+        console.log('✓ Filtros removidos - mostrando todas las features');
+        return;
+    }
+
+    // Aplicar filtro por comuna a cada capa
+    let filteredCount = 0;
+    let skippedLayers = [];
+    
+    layersToFilter.forEach(layer => {
+        if (!map.getLayer(layer.id)) {
+            skippedLayers.push(`${layer.name} (no está en el mapa)`);
+            return;
+        }
+
+        // Obtener la columna correcta desde popupFields
+        const comunaColumn = getComunaColumnForLayer(layer);
+        
+        // Crear el filtro usando la columna correcta
+        const filter = [
+            'in',
+            ['get', comunaColumn],
+            ['literal', selectedComunas]
+        ];
+
+        try {
+            map.setFilter(layer.id, filter);
+            filteredCount++;
+            console.log(`  ✓ ${layer.name} (columna: ${comunaColumn})`);
+        } catch (error) {
+            console.warn(`  ⚠️ Error al filtrar ${layer.name}:`, error.message);
+            skippedLayers.push(`${layer.name} (error: ${error.message})`);
+        }
+    });
+
+    console.log(`✅ Filtros aplicados a ${filteredCount} capas por: ${selectedComunas.join(', ')}`);
+    
+    if (skippedLayers.length > 0) {
+        console.warn(`⚠️ Capas omitidas (${skippedLayers.length}):`, skippedLayers);
+    }
+}
+
+// Inicializar filtros cuando el DOM esté listo
+function initializeFilters() {
+    const searchInput = document.getElementById('comunaSearchInput');
+    const dropdown = document.getElementById('comunaDropdown');
+    const dropdownContent = document.getElementById('comunaDropdownContent');
+    const selectedTagsContainer = document.getElementById('selectedComunasTags');
+    const clearSearchBtn = document.getElementById('clearComunaSearch');
+    const summaryDiv = document.getElementById('comunaSummary');
+    const filterCountSpan = document.getElementById('comunaFilterCount');
+    const clearAllBtn = document.getElementById('clearAllComunas');
+    const applyBtn = document.getElementById('applyFiltersBtn');
+
+    if (!searchInput) {
+        console.warn('⚠️ Elementos del filtro no encontrados en el DOM');
+        return;
+    }
+
+    // Función para renderizar el dropdown
+    function renderDropdown(filter = '') {
+        const filtered = comunasChile.filter(comuna => 
+            comuna.toLowerCase().includes(filter.toLowerCase()) &&
+            !selectedComunas.includes(comuna)
+        );
+
+        if (filtered.length === 0) {
+            dropdownContent.innerHTML = '<div class="no-results">No se encontraron comunas</div>';
+            return;
+        }
+
+        // Mostrar máximo 50 resultados para mejor performance
+        const results = filtered.slice(0, 50).map(comuna => 
+            `<div class="dropdown-item" data-comuna="${comuna}">${comuna}</div>`
+        ).join('');
+
+        if (filtered.length > 50) {
+            dropdownContent.innerHTML = results + `<div class="no-results">+${filtered.length - 50} resultados más...</div>`;
+        } else {
+            dropdownContent.innerHTML = results;
+        }
+
+        // Event listeners para cada item
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                selectComuna(item.dataset.comuna);
+            });
+        });
+    }
+
+    // Seleccionar una comuna
+    function selectComuna(comuna) {
+        if (!selectedComunas.includes(comuna)) {
+            selectedComunas.push(comuna);
+            updateUI();
+            updateFilterBadge();
+            searchInput.value = '';
+            dropdown.classList.remove('visible');
+            searchInput.focus();
+        }
+    }
+
+    // Remover una comuna
+    function removeComuna(comuna) {
+        selectedComunas = selectedComunas.filter(c => c !== comuna);
+        updateUI();
+        updateFilterBadge();
+    }
+
+    // Actualizar UI
+    function updateUI() {
+        // Tags de comunas seleccionadas
+        if (selectedComunas.length > 0) {
+            selectedTagsContainer.innerHTML = selectedComunas.map(comuna => `
+                <div class="comuna-tag">
+                    <span>${comuna}</span>
+                    <button class="remove-comuna" data-comuna="${comuna}" title="Quitar ${comuna}">×</button>
+                </div>
+            `).join('');
+
+            // Event listeners para remover
+            document.querySelectorAll('.remove-comuna').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    removeComuna(btn.dataset.comuna);
+                });
+            });
+        } else {
+            selectedTagsContainer.innerHTML = '';
+        }
+
+        // Summary
+        if (selectedComunas.length > 0) {
+            summaryDiv.classList.add('visible');
+            const plural = selectedComunas.length === 1 ? 'a' : 's';
+            filterCountSpan.textContent = selectedComunas.length;
+        } else {
+            summaryDiv.classList.remove('visible');
+        }
+
+        // Clear search button
+        if (searchInput.value.length > 0) {
+            clearSearchBtn.classList.add('visible');
+        } else {
+            clearSearchBtn.classList.remove('visible');
+        }
+    }
+
+    // Actualizar badge con número de filtros
+    function updateFilterBadge() {
+        const badge = document.getElementById('filterBadge');
+        if (badge) {
+            if (selectedComunas.length > 0) {
+                badge.textContent = selectedComunas.length;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+    }
+
+    // Event: Input en búsqueda
+    searchInput.addEventListener('input', (e) => {
+        const value = e.target.value;
+        if (value.length > 0) {
+            renderDropdown(value);
+            dropdown.classList.add('visible');
+        } else {
+            dropdown.classList.remove('visible');
+        }
+        updateUI();
+    });
+
+    // Event: Focus en input
+    searchInput.addEventListener('focus', () => {
+        if (searchInput.value.length > 0) {
+            renderDropdown(searchInput.value);
+            dropdown.classList.add('visible');
+        }
+    });
+
+    // Event: Click fuera del dropdown
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            dropdown.classList.remove('visible');
+        }
+    });
+
+    // Event: Limpiar búsqueda
+    clearSearchBtn?.addEventListener('click', () => {
+        searchInput.value = '';
+        dropdown.classList.remove('visible');
+        updateUI();
+        searchInput.focus();
+    });
+
+    // Event: Limpiar todos los filtros
+    clearAllBtn?.addEventListener('click', () => {
+        selectedComunas = [];
+        updateUI();
+        updateFilterBadge();
+        applyFiltersToComunas(); // Aplicar inmediatamente
+    });
+
+    // Event: Aplicar filtros
+    applyBtn?.addEventListener('click', () => {
+        applyFiltersToComunas();
+    });
+
+    // Tecla Enter para seleccionar primera opción
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            if (dropdown.classList.contains('visible')) {
+                const firstItem = dropdown.querySelector('.dropdown-item');
+                if (firstItem) {
+                    selectComuna(firstItem.dataset.comuna);
+                }
+            }
+        }
+        // Tecla Escape para cerrar dropdown
+        if (e.key === 'Escape') {
+            dropdown.classList.remove('visible');
+            searchInput.blur();
+        }
+    });
+
+    console.log('✅ Sistema de filtros inicializado correctamente');
+}
+
+// Inicializar cuando el mapa esté cargado
+if (typeof map !== 'undefined') {
+    map.on('load', () => {
+        initializeFilters();
+    });
+} else {
+    // Si el mapa aún no existe, esperar al DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            initializeFilters();
+        }, 1000);
+    });
+}
+
+// Toggle panel de filtros
+document.addEventListener('DOMContentLoaded', () => {
+    const toggleBtn = document.getElementById('toggleFilterPanel');
+    const closeBtn = document.getElementById('closeFilterPanel');
+    const panel = document.getElementById('filter-comuna-panel');
+
+    toggleBtn?.addEventListener('click', () => {
+        panel?.classList.add('open');
+    });
+
+    closeBtn?.addEventListener('click', () => {
+        panel?.classList.remove('open');
+    });
+});
