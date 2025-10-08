@@ -778,6 +778,21 @@ body {
   background: #6b7280;
 }
 
+.filter-hint {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%);
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 12px;
+  color: #dbeafe;
+  line-height: 1.5;
+}
+
+.filter-hint strong {
+  color: #fff;
+  font-weight: 600;
+}
+
 /* RESPONSIVE */
 @media (max-width: 768px) {
   .filter-panel-comuna {
