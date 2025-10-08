@@ -406,7 +406,7 @@ body {
   position: fixed;
   right: 0;
   top: 0;
-  width: 360px;
+  width: 300px;
   height: 100vh;
   background: #1f2937;
   border-left: 1px solid #374151;
@@ -423,7 +423,7 @@ body {
 }
 
 .filter-header {
-  padding: 20px;
+  padding: 16px;
   border-bottom: 1px solid #374151;
   background: #111827;
   display: flex;
@@ -460,26 +460,7 @@ body {
 .filter-content {
   flex: 1;
   overflow-y: auto;
-  padding: 20px;
-}
-
-/* INFO BOX */
-.info-box {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);
-  padding: 14px 16px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.info-box p {
-  color: #e0e7ff;
-  font-size: 13px;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.info-box strong {
-  color: #fff;
+  padding: 16px;
 }
 
 /* SUMMARY */
@@ -487,7 +468,7 @@ body {
   background: #111827;
   padding: 12px 16px;
   border-radius: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
   display: none;
   flex-direction: row;
   justify-content: space-between;
@@ -526,7 +507,7 @@ body {
 
 /* SEARCH SECTION */
 .search-section {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .search-section label {
@@ -651,12 +632,12 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 12px;
+  padding: 6px 10px;
   background: rgba(59, 130, 246, 0.15);
   border: 1px solid rgba(59, 130, 246, 0.3);
   color: #60a5fa;
-  border-radius: 20px;
-  font-size: 13px;
+  border-radius: 16px;
+  font-size: 12px;
   font-weight: 500;
   transition: all 0.2s;
 }
@@ -672,14 +653,14 @@ body {
   color: #60a5fa;
   cursor: pointer;
   padding: 0;
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 50%;
   transition: all 0.2s;
-  font-size: 18px;
+  font-size: 16px;
   line-height: 1;
   font-weight: 600;
 }
@@ -690,20 +671,20 @@ body {
 
 /* FOOTER */
 .filter-footer {
-  padding: 20px;
+  padding: 16px;
   border-top: 1px solid #374151;
   background: #111827;
 }
 
 .apply-btn {
   width: 100%;
-  padding: 14px;
+  padding: 12px;
   background: #3b82f6;
   color: #fff;
   border: none;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -718,50 +699,59 @@ body {
   transform: translateY(0);
 }
 
-/* BOTÓN FLOTANTE PARA ABRIR PANEL */
-.open-filter-btn {
-  position: fixed;
-  right: 20px;
-  top: 80px;
-  background: #1f2937;
-  color: #fff;
-  border: 1px solid #374151;
-  padding: 12px 16px;
+/* BOTÓN DE FILTROS ESTILO ICONO  */
+.filter-icon-btn {
+  position: absolute;
+  top: 20px;
+  right: 360px; /* Al lado izquierdo del panel de capas */
+  width: 40px;
+  height: 40px;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   cursor: pointer;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  z-index: 999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  z-index: 1001;
   transition: all 0.2s;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 500;
+  justify-content: center;
+  padding: 0;
 }
 
-.open-filter-btn:hover {
-  background: #374151;
+.filter-icon-btn:hover {
+  background: rgba(40, 40, 40, 0.95);
   transform: translateY(-2px);
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
-.open-filter-btn svg {
+.filter-icon-btn svg {
   color: #3b82f6;
+  transition: color 0.2s;
 }
 
-.filter-badge {
+.filter-icon-btn:hover svg {
+  color: #60a5fa;
+}
+
+.filter-badge-small {
+  position: absolute;
+  top: -6px;
+  right: -6px;
   background: #3b82f6;
   color: #fff;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: bold;
-  min-width: 20px;
-  height: 20px;
-  border-radius: 10px;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 6px;
-  margin-left: 4px;
+  padding: 0 5px;
+  border: 2px solid rgba(20, 20, 20, 0.95);
 }
 
 /* SCROLLBAR PERSONALIZADO */
@@ -792,15 +782,8 @@ body {
     width: 100%;
   }
   
-  .open-filter-btn {
+  .filter-icon-btn {
     right: 10px;
-    top: 10px;
-    padding: 10px 12px;
-    font-size: 13px;
+    top: 70px;
   }
-}
-
-/* AJUSTES SI HAY OTRO PANEL ABIERTO */
-.filter-panel-comuna.open ~ .open-filter-btn {
-  display: none;
 }
