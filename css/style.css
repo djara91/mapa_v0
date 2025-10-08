@@ -405,7 +405,7 @@ body {
 .filter-panel-comuna {
   position: fixed;
   right: 0;
-  top: 0;
+  top: 20px;
   bottom: 20px;
   width: 300px;
   height: auto;
