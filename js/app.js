@@ -730,6 +730,15 @@ function createPopup(feature, layer) {
 // SISTEMA DE FILTROS POR COMUNA 
 // ==========================================
 
+// Función auxiliar para normalizar texto (quitar tildes y convertir a minúsculas)
+function normalizeText(text) {
+    if (!text) return '';
+    return text
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, ''); // Quita tildes
+}
+
 // Lista completa de comunas de Chile
 const comunasChile = [
   // REGIÓN DE ARICA Y PARINACOTA
@@ -869,7 +878,7 @@ function getComunaColumnForLayer(layer) {
     return 'comuna';
 }
 
-// Aplicar filtros a las capas del mapa
+// Aplicar filtros a las capas del mapa (VERSIÓN ACTUALIZADA CON NORMALIZACIÓN)
 function applyFiltersToComunas() {
     if (!map) {
         console.error('❌ El mapa no está inicializado');
@@ -894,7 +903,9 @@ function applyFiltersToComunas() {
         return;
     }
 
-    // Aplicar filtro por comuna a cada capa
+    // Normalizar las comunas seleccionadas para comparación
+    const normalizedSelectedComunas = selectedComunas.map(c => normalizeText(c));
+
     let filteredCount = 0;
     let skippedLayers = [];
     
@@ -904,20 +915,45 @@ function applyFiltersToComunas() {
             return;
         }
 
-        // Obtener la columna correcta desde popupFields
         const comunaColumn = getComunaColumnForLayer(layer);
         
-        // Crear el filtro usando la columna correcta
-        const filter = [
-            'in',
-            ['get', comunaColumn],
-            ['literal', selectedComunas]
-        ];
-
         try {
-            map.setFilter(layer.id, filter);
-            filteredCount++;
-            console.log(`  ✓ ${layer.name} (columna: ${comunaColumn})`);
+            // Obtener todas las features de esta capa
+            const features = map.querySourceFeatures(layer.tilesetId, {
+                sourceLayer: layer.sourceLayer
+            });
+
+            // Crear un Set de comunas únicas que coincidan (normalizadas)
+            const matchingComunas = new Set();
+            
+            features.forEach(feature => {
+                const comunaValue = feature.properties[comunaColumn];
+                if (comunaValue) {
+                    const normalized = normalizeText(comunaValue);
+                    if (normalizedSelectedComunas.includes(normalized)) {
+                        // Guardamos el valor ORIGINAL para el filtro
+                        matchingComunas.add(comunaValue);
+                    }
+                }
+            });
+
+            if (matchingComunas.size > 0) {
+                // Usar los valores originales en el filtro
+                const filter = [
+                    'in',
+                    ['get', comunaColumn],
+                    ['literal', Array.from(matchingComunas)]
+                ];
+                
+                map.setFilter(layer.id, filter);
+                filteredCount++;
+                console.log(`  ✓ ${layer.name} (columna: ${comunaColumn}, ${matchingComunas.size} variantes encontradas)`);
+            } else {
+                // Si no hay coincidencias, ocultar todo
+                map.setFilter(layer.id, ['==', ['get', comunaColumn], '___no_match___']);
+                console.log(`  ⚠️ ${layer.name} - sin coincidencias`);
+            }
+            
         } catch (error) {
             console.warn(`  ⚠️ Error al filtrar ${layer.name}:`, error.message);
             skippedLayers.push(`${layer.name} (error: ${error.message})`);
@@ -930,7 +966,6 @@ function applyFiltersToComunas() {
         console.warn(`⚠️ Capas omitidas (${skippedLayers.length}):`, skippedLayers);
     }
 }
-
 // Inicializar filtros cuando el DOM esté listo
 function initializeFilters() {
     const searchInput = document.getElementById('comunaSearchInput');
