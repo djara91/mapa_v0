@@ -878,7 +878,7 @@ function getComunaColumnForLayer(layer) {
     return 'comuna';
 }
 
-// Aplicar filtros a las capas del mapa (VERSIÓN FINAL - SIN querySourceFeatures)
+// Aplicar filtros a las capas del mapa (VERSIÓN COMPATIBLE CON MAPBOX GL JS)
 function applyFiltersToComunas() {
     if (!map) {
         console.error('❌ El mapa no está inicializado');
@@ -901,9 +901,6 @@ function applyFiltersToComunas() {
         return;
     }
 
-    // Normalizar las comunas seleccionadas
-    const normalizedSelectedComunas = selectedComunas.map(c => normalizeText(c));
-
     let filteredCount = 0;
     
     layersToFilter.forEach(layer => {
@@ -914,40 +911,25 @@ function applyFiltersToComunas() {
         const comunaColumn = getComunaColumnForLayer(layer);
         
         try {
-            // Crear condiciones para cada comuna
-            const conditions = normalizedSelectedComunas.map(normalizedComuna => {
-                // Normalizar: minúsculas + quitar tildes
-                return [
-                    '==',
-                    [
-                        'downcase',
-                        [
-                            'replace',
-                            ['replace',
-                                ['replace',
-                                    ['replace',
-                                        ['replace',
-                                            ['to-string', ['get', comunaColumn]],
-                                            'á', 'a'
-                                        ],
-                                        'é', 'e'
-                                    ],
-                                    'í', 'i'
-                                ],
-                                'ó', 'o'
-                            ],
-                            'ú', 'u'
-                        ]
-                    ],
-                    normalizedComuna
-                ];
+            // Crear variantes de cada comuna (con/sin tildes, mayúsculas/minúsculas)
+            const allVariants = [];
+            
+            selectedComunas.forEach(comuna => {
+                // Generar variantes posibles
+                const variants = generateComunaVariants(comuna);
+                allVariants.push(...variants);
             });
 
-            const filter = conditions.length === 1 ? conditions[0] : ['any', ...conditions];
+            // Crear filtro con todas las variantes
+            const filter = [
+                'in',
+                ['get', comunaColumn],
+                ['literal', allVariants]
+            ];
             
             map.setFilter(layer.id, filter);
             filteredCount++;
-            console.log(`  ✓ ${layer.name} (columna: ${comunaColumn})`);
+            console.log(`  ✓ ${layer.name} (columna: ${comunaColumn}, ${allVariants.length} variantes)`);
             
         } catch (error) {
             console.warn(`  ⚠️ Error al filtrar ${layer.name}:`, error.message);
@@ -955,6 +937,33 @@ function applyFiltersToComunas() {
     });
 
     console.log(`✅ Filtros aplicados a ${filteredCount} capas`);
+}
+
+// Función auxiliar para generar variantes de una comuna
+function generateComunaVariants(comuna) {
+    const variants = new Set();
+    
+    // Variantes de mayúsculas/minúsculas
+    variants.add(comuna); // Original
+    variants.add(comuna.toLowerCase()); // minúsculas
+    variants.add(comuna.toUpperCase()); // MAYÚSCULAS
+    variants.add(comuna.charAt(0).toUpperCase() + comuna.slice(1).toLowerCase()); // Capitalizado
+    
+    // Variantes con/sin tildes
+    const withoutAccents = comuna
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
+    
+    variants.add(withoutAccents);
+    variants.add(withoutAccents.toLowerCase());
+    variants.add(withoutAccents.toUpperCase());
+    variants.add(withoutAccents.charAt(0).toUpperCase() + withoutAccents.slice(1).toLowerCase());
+    
+    // Variantes con tildes en mayúsculas
+    const upperWithAccents = comuna.toUpperCase();
+    variants.add(upperWithAccents);
+    
+    return Array.from(variants);
 }
 // Inicializar filtros cuando el DOM esté listo
 function initializeFilters() {
