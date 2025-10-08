@@ -878,14 +878,13 @@ function getComunaColumnForLayer(layer) {
     return 'comuna';
 }
 
-// Aplicar filtros a las capas del mapa (VERSIÓN ACTUALIZADA CON NORMALIZACIÓN)
+// Aplicar filtros a las capas del mapa (VERSIÓN FINAL - SIN querySourceFeatures)
 function applyFiltersToComunas() {
     if (!map) {
         console.error('❌ El mapa no está inicializado');
         return;
     }
 
-    // Obtener todas las capas EXCEPTO las de categoría "Predios"
     const layersToFilter = config.layers.filter(layer => 
         layer.category !== 'Predios'
     );
@@ -893,7 +892,6 @@ function applyFiltersToComunas() {
     console.log(`🔍 Aplicando filtros a ${layersToFilter.length} capas (excluyendo Predios)`);
 
     if (selectedComunas.length === 0) {
-        // Si no hay filtros, remover filtros de todas las capas
         layersToFilter.forEach(layer => {
             if (map.getLayer(layer.id)) {
                 map.setFilter(layer.id, null);
@@ -903,68 +901,60 @@ function applyFiltersToComunas() {
         return;
     }
 
-    // Normalizar las comunas seleccionadas para comparación
+    // Normalizar las comunas seleccionadas
     const normalizedSelectedComunas = selectedComunas.map(c => normalizeText(c));
 
     let filteredCount = 0;
-    let skippedLayers = [];
     
     layersToFilter.forEach(layer => {
         if (!map.getLayer(layer.id)) {
-            skippedLayers.push(`${layer.name} (no está en el mapa)`);
             return;
         }
 
         const comunaColumn = getComunaColumnForLayer(layer);
         
         try {
-            // Obtener todas las features de esta capa
-            const features = map.querySourceFeatures(layer.tilesetId, {
-                sourceLayer: layer.sourceLayer
-            });
-
-            // Crear un Set de comunas únicas que coincidan (normalizadas)
-            const matchingComunas = new Set();
-            
-            features.forEach(feature => {
-                const comunaValue = feature.properties[comunaColumn];
-                if (comunaValue) {
-                    const normalized = normalizeText(comunaValue);
-                    if (normalizedSelectedComunas.includes(normalized)) {
-                        // Guardamos el valor ORIGINAL para el filtro
-                        matchingComunas.add(comunaValue);
-                    }
-                }
-            });
-
-            if (matchingComunas.size > 0) {
-                // Usar los valores originales en el filtro
-                const filter = [
-                    'in',
-                    ['get', comunaColumn],
-                    ['literal', Array.from(matchingComunas)]
+            // Crear condiciones para cada comuna
+            const conditions = normalizedSelectedComunas.map(normalizedComuna => {
+                // Normalizar: minúsculas + quitar tildes
+                return [
+                    '==',
+                    [
+                        'downcase',
+                        [
+                            'replace',
+                            ['replace',
+                                ['replace',
+                                    ['replace',
+                                        ['replace',
+                                            ['to-string', ['get', comunaColumn]],
+                                            'á', 'a'
+                                        ],
+                                        'é', 'e'
+                                    ],
+                                    'í', 'i'
+                                ],
+                                'ó', 'o'
+                            ],
+                            'ú', 'u'
+                        ]
+                    ],
+                    normalizedComuna
                 ];
-                
-                map.setFilter(layer.id, filter);
-                filteredCount++;
-                console.log(`  ✓ ${layer.name} (columna: ${comunaColumn}, ${matchingComunas.size} variantes encontradas)`);
-            } else {
-                // Si no hay coincidencias, ocultar todo
-                map.setFilter(layer.id, ['==', ['get', comunaColumn], '___no_match___']);
-                console.log(`  ⚠️ ${layer.name} - sin coincidencias`);
-            }
+            });
+
+            const filter = conditions.length === 1 ? conditions[0] : ['any', ...conditions];
+            
+            map.setFilter(layer.id, filter);
+            filteredCount++;
+            console.log(`  ✓ ${layer.name} (columna: ${comunaColumn})`);
             
         } catch (error) {
             console.warn(`  ⚠️ Error al filtrar ${layer.name}:`, error.message);
-            skippedLayers.push(`${layer.name} (error: ${error.message})`);
         }
     });
 
-    console.log(`✅ Filtros aplicados a ${filteredCount} capas por: ${selectedComunas.join(', ')}`);
-    
-    if (skippedLayers.length > 0) {
-        console.warn(`⚠️ Capas omitidas (${skippedLayers.length}):`, skippedLayers);
-    }
+    console.log(`✅ Filtros aplicados a ${filteredCount} capas`);
 }
 // Inicializar filtros cuando el DOM esté listo
 function initializeFilters() {
