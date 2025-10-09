@@ -534,6 +534,8 @@ map.on('load', () => {
         15, 6,
         20, 8
       ]);
+    
+      map.setPaintProperty(layer.id, 'circle-stroke-width', 0);
     }
           
     // Cambiar cursor
