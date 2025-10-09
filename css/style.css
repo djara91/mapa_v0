@@ -808,7 +808,7 @@ body {
 .basemap-selector {
   position: absolute;
   top: 10px;
-  left: 10px;
+  left: 50px;
   z-index: 1000;
 }
 
