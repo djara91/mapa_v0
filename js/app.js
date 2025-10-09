@@ -547,11 +547,11 @@ document.querySelectorAll('.basemap-option').forEach(btn => {
                 'interpolate',
                 ['linear'],
                 ['zoom'],
-                1, 0.2,
-                5, 0.5,
-                10, 1,
-                15, 1.5,
-                20, 2
+                1, 0.1,
+                5, 0.2,
+                10, 0.5,
+                15, 0.7,
+                20, 1
               ],
               'icon-allow-overlap': true,
               'visibility': 'none'
@@ -654,11 +654,11 @@ map.on('load', () => {
           'interpolate',
           ['linear'],
           ['zoom'],
-          1, 0.2,
-          5, 0.5,
-          10, 1,
-          15, 1.5,
-          20, 2
+          1, 0.1,
+          5, 0.2,
+          10, 0.5,
+          15, 0.7,
+          20, 1
         ],
         'icon-allow-overlap': true,
         'visibility': 'none'
