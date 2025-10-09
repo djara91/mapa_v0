@@ -515,11 +515,11 @@ map.on('load', () => {
           'interpolate',
           ['linear'],
           ['zoom'],
-          1, 0.05,
-          5, 0.1,
-          10, 0.15,
-          15, 0.25,
-          20, 0.35
+          1, 0.02,
+          5, 0.05,
+          10, 0.07,
+          15, 0.12,
+          20, 0.15
         ],
         'icon-allow-overlap': true,
         'visibility': 'none'
