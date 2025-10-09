@@ -468,6 +468,71 @@ Object.keys(categories).forEach(categoryName => {
   panelContent.appendChild(categoryDiv);
 });
 
+// Selector de estilos de mapa
+document.querySelectorAll('.basemap-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const newStyle = this.getAttribute('data-style');
+    
+    // Guardar las capas actuales antes de cambiar el estilo
+    const currentLayers = [];
+    
+    config.layers.forEach(layer => {
+      if (map.getLayer(layer.id)) {
+        currentLayers.push({
+          id: layer.id,
+          visibility: map.getLayoutProperty(layer.id, 'visibility')
+        });
+      }
+    });
+    
+    // Cambiar el estilo del mapa
+    map.setStyle(newStyle);
+    
+    // Cuando el nuevo estilo cargue, restaurar las capas
+    map.once('style.load', () => {
+      // Re-agregar sources y layers
+      config.layers.forEach(layer => {
+        if (!map.getSource(layer.id)) {
+          map.addSource(layer.id, {
+            type: 'vector',
+            url: `mapbox://${layer.tilesetId}`
+          });
+        }
+        
+        if (!map.getLayer(layer.id)) {
+          const layerConfig = {
+            id: layer.id,
+            type: layer.type,
+            source: layer.id,
+            'source-layer': layer.sourceLayer,
+            layout: {
+              visibility: 'none'
+            },
+            paint: layer.paint
+          };
+          
+          map.addLayer(layerConfig);
+          
+          // Restaurar visibilidad
+          const savedLayer = currentLayers.find(l => l.id === layer.id);
+          if (savedLayer) {
+            map.setLayoutProperty(layer.id, 'visibility', savedLayer.visibility);
+          }
+        }
+      });
+      
+      // Mover sitios priorizados al tope
+      if (map.getLayer('sitios-priorizados')) {
+        map.moveLayer('sitios-priorizados');
+      }
+    });
+    
+    // Actualizar botón activo
+    document.querySelectorAll('.basemap-btn').forEach(b => b.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
 // Cuando el mapa cargue
 map.on('load', () => {
   // Ocultar loading
