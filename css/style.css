@@ -809,53 +809,80 @@ body {
   position: absolute;
   top: 10px;
   left: 10px;
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 8px;
-  padding: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-  display: flex;
-  gap: 5px;
   z-index: 1000;
 }
 
-.basemap-btn {
+.basemap-toggle {
   background: white;
   border: 2px solid #ddd;
-  border-radius: 6px;
-  padding: 8px 12px;
+  border-radius: 8px;
+  padding: 10px 16px;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 }
 
-.basemap-btn:hover {
+.basemap-toggle:hover {
   background: #f0f0f0;
   border-color: #3b82f6;
 }
 
-.basemap-btn.active {
-  background: #3b82f6;
-  color: white;
-  border-color: #3b82f6;
+.basemap-dropdown {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  padding: 8px;
+  min-width: 160px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.basemap-btn span {
-  font-size: 16px;
+.basemap-dropdown.show {
+  display: flex;
+}
+
+.basemap-option {
+  background: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.basemap-option:hover {
+  background: #f0f0f0;
+}
+
+.basemap-option.active {
+  background: #3b82f6;
+  color: white;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .basemap-selector {
-    flex-wrap: wrap;
-    max-width: 200px;
+  .basemap-toggle {
+    font-size: 12px;
+    padding: 8px 12px;
   }
   
-  .basemap-btn {
-    font-size: 10px;
-    padding: 6px 8px;
+  .basemap-option {
+    font-size: 12px;
+    padding: 8px 10px;
   }
 }
