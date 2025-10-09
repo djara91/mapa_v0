@@ -895,3 +895,36 @@ body {
     padding: 8px 10px;
   }
 }
+
+/* Estilo para el item "Seleccionar todos" */
+.select-all-item {
+    background: rgba(59, 130, 246, 0.08) !important;
+    border: 1px solid rgba(59, 130, 246, 0.2) !important;
+    margin-bottom: 10px;
+}
+
+.select-all-item:hover {
+    background: rgba(59, 130, 246, 0.12) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+.select-all-item.active {
+    background: rgba(59, 130, 246, 0.2) !important;
+    border-color: rgba(59, 130, 246, 0.5) !important;
+}
+
+/* Estado indeterminado del checkbox */
+.select-all-checkbox:indeterminate {
+    background-color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.select-all-checkbox:indeterminate::after {
+    content: '−';
+    display: block;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 14px;
+}
