@@ -469,11 +469,27 @@ Object.keys(categories).forEach(categoryName => {
 });
 
 // Selector de estilos de mapa
-document.querySelectorAll('.basemap-btn').forEach(btn => {
+const basemapToggle = document.getElementById('basemapToggle');
+const basemapDropdown = document.getElementById('basemapDropdown');
+
+// Toggle del dropdown
+basemapToggle.addEventListener('click', () => {
+  basemapDropdown.classList.toggle('show');
+});
+
+// Cerrar dropdown al hacer clic fuera
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.basemap-selector')) {
+    basemapDropdown.classList.remove('show');
+  }
+});
+
+// Cambiar estilo de mapa
+document.querySelectorAll('.basemap-option').forEach(btn => {
   btn.addEventListener('click', function() {
     const newStyle = this.getAttribute('data-style');
     
-    // Guardar las capas actuales antes de cambiar el estilo
+    // Guardar las capas actuales
     const currentLayers = [];
     
     config.layers.forEach(layer => {
@@ -490,7 +506,6 @@ document.querySelectorAll('.basemap-btn').forEach(btn => {
     
     // Cuando el nuevo estilo cargue, restaurar las capas
     map.once('style.load', () => {
-      // Re-agregar sources y layers
       config.layers.forEach(layer => {
         if (!map.getSource(layer.id)) {
           map.addSource(layer.id, {
@@ -528,8 +543,11 @@ document.querySelectorAll('.basemap-btn').forEach(btn => {
     });
     
     // Actualizar botón activo
-    document.querySelectorAll('.basemap-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.basemap-option').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
+    
+    // Cerrar dropdown
+    basemapDropdown.classList.remove('show');
   });
 });
 
