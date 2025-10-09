@@ -534,6 +534,7 @@ map.on('load', () => {
         15, 6,
         20, 8
       ]);
+    }
           
     // Cambiar cursor
     map.on('mouseenter', layer.id, () => {
