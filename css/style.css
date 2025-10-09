@@ -804,3 +804,58 @@ body {
     top: 70px;
   }
 }
+/* Selector de estilo de mapa */
+.basemap-selector {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  gap: 5px;
+  z-index: 1000;
+}
+
+.basemap-btn {
+  background: white;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.basemap-btn:hover {
+  background: #f0f0f0;
+  border-color: #3b82f6;
+}
+
+.basemap-btn.active {
+  background: #3b82f6;
+  color: white;
+  border-color: #3b82f6;
+}
+
+.basemap-btn span {
+  font-size: 16px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .basemap-selector {
+    flex-wrap: wrap;
+    max-width: 200px;
+  }
+  
+  .basemap-btn {
+    font-size: 10px;
+    padding: 6px 8px;
+  }
+}
