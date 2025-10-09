@@ -436,6 +436,151 @@ const categoryIcons = {
   'SPPC': '⚠️'
 };
 
+function createCategory(categoryName, layers) {
+  const categoryDiv = document.createElement('div');
+  categoryDiv.className = 'category';
+  
+  // Obtener el ícono de la categoría
+  const icon = categoryIcons[categoryName] || '📍';
+  
+  // Header de la categoría
+  const categoryHeader = document.createElement('div');
+  categoryHeader.className = 'category-header';
+  categoryHeader.innerHTML = `
+    <span class="category-icon">${icon}</span>
+    <span class="category-name">${categoryName}</span>
+    <span class="category-count">${layers.length}</span>
+    <span class="category-arrow">▼</span>
+  `;
+  
+  // Contenedor de capas
+  const categoryLayers = document.createElement('div');
+  categoryLayers.className = 'category-layers';
+  
+  // ⭐ NUEVO: Agregar "Seleccionar todos"
+  const selectAllDiv = document.createElement('div');
+  selectAllDiv.className = 'layer-item select-all-item';
+  selectAllDiv.innerHTML = `
+    <input type="checkbox" class="layer-checkbox select-all-checkbox" id="select-all-${categoryName.replace(/\s+/g, '-')}">
+    <span class="layer-name" style="font-weight: 600; color: #60a5fa;">Seleccionar todos</span>
+  `;
+  categoryLayers.appendChild(selectAllDiv);
+  
+  const selectAllCheckbox = selectAllDiv.querySelector('.select-all-checkbox');
+  
+  // Agregar cada capa
+  layers.forEach(layer => {
+    const layerItem = document.createElement('div');
+    layerItem.className = 'layer-item';
+    layerItem.innerHTML = `
+      <input type="checkbox" class="layer-checkbox" id="${layer.id}">
+      <div class="layer-color" style="background-color: ${layer.color || layer.paint['circle-color'] || '#3b82f6'}"></div>
+      <span class="layer-name">${layer.name}</span>
+    `;
+    
+    const checkbox = layerItem.querySelector('.layer-checkbox');
+    
+    // Toggle visibilidad al hacer clic
+    layerItem.addEventListener('click', (e) => {
+      if (e.target !== checkbox) {
+        checkbox.checked = !checkbox.checked;
+      }
+      
+      const visibility = checkbox.checked ? 'visible' : 'none';
+      if (map.getLayer(layer.id)) {
+        map.setLayoutProperty(layer.id, 'visibility', visibility);
+      }
+      
+      layerItem.classList.toggle('active', checkbox.checked);
+      
+      // Actualizar estado del "Seleccionar todos"
+      updateSelectAllState();
+    });
+    
+    // También manejar click directo en checkbox
+    checkbox.addEventListener('change', () => {
+      const visibility = checkbox.checked ? 'visible' : 'none';
+      if (map.getLayer(layer.id)) {
+        map.setLayoutProperty(layer.id, 'visibility', visibility);
+      }
+      layerItem.classList.toggle('active', checkbox.checked);
+      
+      // Actualizar estado del "Seleccionar todos"
+      updateSelectAllState();
+    });
+    
+    categoryLayers.appendChild(layerItem);
+  });
+  
+  // ⭐ NUEVO: Función para actualizar el estado de "Seleccionar todos"
+  function updateSelectAllState() {
+    const allCheckboxes = Array.from(categoryLayers.querySelectorAll('.layer-checkbox:not(.select-all-checkbox)'));
+    const allChecked = allCheckboxes.every(cb => cb.checked);
+    const someChecked = allCheckboxes.some(cb => cb.checked);
+    
+    selectAllCheckbox.checked = allChecked;
+    selectAllCheckbox.indeterminate = someChecked && !allChecked;
+  }
+  
+  // ⭐ NUEVO: Evento para "Seleccionar todos"
+  selectAllDiv.addEventListener('click', (e) => {
+    if (e.target !== selectAllCheckbox) {
+      selectAllCheckbox.checked = !selectAllCheckbox.checked;
+    }
+    
+    const newState = selectAllCheckbox.checked;
+    
+    // Marcar/desmarcar todas las capas de esta categoría
+    const allCheckboxes = categoryLayers.querySelectorAll('.layer-checkbox:not(.select-all-checkbox)');
+    allCheckboxes.forEach(checkbox => {
+      checkbox.checked = newState;
+      const layerItem = checkbox.closest('.layer-item');
+      layerItem.classList.toggle('active', newState);
+      
+      // Aplicar visibilidad en el mapa
+      const layerId = checkbox.id;
+      const visibility = newState ? 'visible' : 'none';
+      if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, 'visibility', visibility);
+      }
+    });
+    
+    selectAllDiv.classList.toggle('active', newState);
+  });
+  
+  selectAllCheckbox.addEventListener('change', () => {
+    const newState = selectAllCheckbox.checked;
+    
+    // Marcar/desmarcar todas las capas de esta categoría
+    const allCheckboxes = categoryLayers.querySelectorAll('.layer-checkbox:not(.select-all-checkbox)');
+    allCheckboxes.forEach(checkbox => {
+      checkbox.checked = newState;
+      const layerItem = checkbox.closest('.layer-item');
+      layerItem.classList.toggle('active', newState);
+      
+      // Aplicar visibilidad en el mapa
+      const layerId = checkbox.id;
+      const visibility = newState ? 'visible' : 'none';
+      if (map.getLayer(layerId)) {
+        map.setLayoutProperty(layerId, 'visibility', visibility);
+      }
+    });
+    
+    selectAllDiv.classList.toggle('active', newState);
+  });
+  
+  // Toggle expandir/colapsar categoría
+  categoryHeader.addEventListener('click', () => {
+    categoryHeader.classList.toggle('active');
+    categoryLayers.classList.toggle('expanded');
+  });
+  
+  categoryDiv.appendChild(categoryHeader);
+  categoryDiv.appendChild(categoryLayers);
+  
+  return categoryDiv;
+}
+
 // Inicializar mapa
 mapboxgl.accessToken = config.mapboxToken;
 
