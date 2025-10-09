@@ -436,6 +436,7 @@ const categoryIcons = {
   'SPPC': '⚠️'
 };
 
+// Función para crear categoría CON "Seleccionar todos"
 function createCategory(categoryName, layers) {
   const categoryDiv = document.createElement('div');
   categoryDiv.className = 'category';
@@ -457,16 +458,20 @@ function createCategory(categoryName, layers) {
   const categoryLayers = document.createElement('div');
   categoryLayers.className = 'category-layers';
   
-  // ⭐ NUEVO: Agregar "Seleccionar todos"
-  const selectAllDiv = document.createElement('div');
-  selectAllDiv.className = 'layer-item select-all-item';
-  selectAllDiv.innerHTML = `
-    <input type="checkbox" class="layer-checkbox select-all-checkbox" id="select-all-${categoryName.replace(/\s+/g, '-')}">
-    <span class="layer-name" style="font-weight: 600; color: #60a5fa;">Seleccionar todos</span>
-  `;
-  categoryLayers.appendChild(selectAllDiv);
+  // ⭐ NUEVO: Agregar "Seleccionar todos" solo si hay más de 1 capa
+  let selectAllDiv = null;
+  let selectAllCheckbox = null;
   
-  const selectAllCheckbox = selectAllDiv.querySelector('.select-all-checkbox');
+  if (layers.length > 1) {
+    selectAllDiv = document.createElement('div');
+    selectAllDiv.className = 'layer-item select-all-item';
+    selectAllDiv.innerHTML = `
+      <input type="checkbox" class="layer-checkbox select-all-checkbox" id="select-all-${categoryName.replace(/\s+/g, '-')}">
+      <span class="layer-name" style="font-weight: 600; color: #60a5fa;">Seleccionar todos</span>
+    `;
+    categoryLayers.appendChild(selectAllDiv);
+    selectAllCheckbox = selectAllDiv.querySelector('.select-all-checkbox');
+  }
   
   // Agregar cada capa
   layers.forEach(layer => {
@@ -493,8 +498,10 @@ function createCategory(categoryName, layers) {
       
       layerItem.classList.toggle('active', checkbox.checked);
       
-      // Actualizar estado del "Seleccionar todos"
-      updateSelectAllState();
+      // Actualizar estado del "Seleccionar todos" solo si existe
+      if (selectAllCheckbox) {
+        updateSelectAllState();
+      }
     });
     
     // También manejar click directo en checkbox
@@ -505,8 +512,10 @@ function createCategory(categoryName, layers) {
       }
       layerItem.classList.toggle('active', checkbox.checked);
       
-      // Actualizar estado del "Seleccionar todos"
-      updateSelectAllState();
+      // Actualizar estado del "Seleccionar todos" solo si existe
+      if (selectAllCheckbox) {
+        updateSelectAllState();
+      }
     });
     
     categoryLayers.appendChild(layerItem);
@@ -514,6 +523,8 @@ function createCategory(categoryName, layers) {
   
   // ⭐ NUEVO: Función para actualizar el estado de "Seleccionar todos"
   function updateSelectAllState() {
+    if (!selectAllCheckbox) return; // Si no existe, no hacer nada
+    
     const allCheckboxes = Array.from(categoryLayers.querySelectorAll('.layer-checkbox:not(.select-all-checkbox)'));
     const allChecked = allCheckboxes.every(cb => cb.checked);
     const someChecked = allCheckboxes.some(cb => cb.checked);
@@ -522,7 +533,8 @@ function createCategory(categoryName, layers) {
     selectAllCheckbox.indeterminate = someChecked && !allChecked;
   }
   
-  // ⭐ NUEVO: Evento para "Seleccionar todos"
+  // ⭐ NUEVO: Eventos para "Seleccionar todos" solo si existe
+  if (selectAllDiv && selectAllCheckbox) {
   selectAllDiv.addEventListener('click', (e) => {
     if (e.target !== selectAllCheckbox) {
       selectAllCheckbox.checked = !selectAllCheckbox.checked;
@@ -568,6 +580,7 @@ function createCategory(categoryName, layers) {
     
     selectAllDiv.classList.toggle('active', newState);
   });
+  } // Cierre del if (selectAllDiv && selectAllCheckbox)
   
   // Toggle expandir/colapsar categoría
   categoryHeader.addEventListener('click', () => {
