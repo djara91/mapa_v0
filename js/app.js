@@ -493,9 +493,48 @@ map.on('load', () => {
       },
       paint: layer.paint
     };
+
+    // Icono SPPC como marcador
+    if (layer.id === 'sitios-priorizados') {
+      layerConfig.type = 'symbol';
+      layerConfig.layout = {
+        'icon-image': 'marker-15', // Ícono de marcador
+        'icon-size': [
+          'interpolate',
+          ['linear'],
+          ['zoom'],
+          1, 0.3,
+          5, 0.5,
+          10, 0.8,
+          15, 1.2,
+          20, 1.5
+        ],
+        'icon-allow-overlap': true,
+        'visibility': 'none'
+      };
+      delete layerConfig.paint; // Los símbolos no usan paint como los círculos
+    }
     
     map.addLayer(layerConfig);
-    
+
+    // Sitios priorizados al incio
+    if (layer.id === 'sitios-priorizados') {
+      map.moveLayer('sitios-priorizados');
+    }
+
+    // Cambiar tamaño punto zoom-out
+    if (layer.type === 'circle') {
+      map.setPaintProperty(layer.id, 'circle-radius', [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        1, 1,
+        5, 2,
+        10, 4,
+        15, 6,
+        20, 8
+      ]);
+          
     // Cambiar cursor
     map.on('mouseenter', layer.id, () => {
       map.getCanvas().style.cursor = 'pointer';
