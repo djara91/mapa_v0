@@ -5,6 +5,34 @@ const config = {
   center: [-71.5430, -33.0472],
   zoom: 5,
   layers: [
+    // SPPC - Tonos amarillos
+    {
+      id: 'sitios-priorizados',
+      name: 'Sitios Priorizados Potencialmente Contaminados',
+      category: 'SPPC',
+      tilesetId: 'djarav91.8do6dm2u',
+      sourceLayer: 'sitios_priorizados-9y3v4s',
+      type: 'circle',
+      paint: {
+        'circle-radius': 7,
+        'circle-color': '#eab308',
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.8
+      },
+      popupFields: [
+        { field: 'nombre sppc', label: 'Nombre SPPC' },
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'nombre empresa o titular', label: 'Empresa/Titular' },
+        { field: 'tipo propiedad (privada/fiscal)', label: 'Tipo Propiedad' },
+        { field: 'act potencial contaminante i', label: 'Actividad Contaminante' },
+        { field: 'id proc indust pot contaminantes i', label: 'Proceso Industrial' },
+        { field: 'potenciales contaminantes i', label: 'Contaminantes' },
+        { field: 'condición (activo, inactivo, abandonado)', label: 'Condición' },
+        { field: 'estado de investigación', label: 'Estado Investigación' },
+        { field: 'prioridad', label: 'Prioridad' }
+      ]
+    },
     // PREDIOS - Tonos morados
     {
       id: 'predios-araucania',
@@ -395,35 +423,6 @@ const config = {
         { field: 'tipoatencionestabglosa', label: 'Tipo Atención' }
       ]
     },
-    
-    // SPPC - Tonos amarillos
-    {
-      id: 'sitios-priorizados',
-      name: 'Sitios Priorizados Potencialmente Contaminados',
-      category: 'SPPC',
-      tilesetId: 'djarav91.8do6dm2u',
-      sourceLayer: 'sitios_priorizados-9y3v4s',
-      type: 'circle',
-      paint: {
-        'circle-radius': 7,
-        'circle-color': '#eab308',
-        'circle-stroke-width': 2,
-        'circle-stroke-color': '#ffffff',
-        'circle-opacity': 0.8
-      },
-      popupFields: [
-        { field: 'nombre sppc', label: 'Nombre SPPC' },
-        { field: 'comuna', label: 'Comuna' },
-        { field: 'nombre empresa o titular', label: 'Empresa/Titular' },
-        { field: 'tipo propiedad (privada/fiscal)', label: 'Tipo Propiedad' },
-        { field: 'act potencial contaminante i', label: 'Actividad Contaminante' },
-        { field: 'id proc indust pot contaminantes i', label: 'Proceso Industrial' },
-        { field: 'potenciales contaminantes i', label: 'Contaminantes' },
-        { field: 'condición (activo, inactivo, abandonado)', label: 'Condición' },
-        { field: 'estado de investigación', label: 'Estado Investigación' },
-        { field: 'prioridad', label: 'Prioridad' }
-      ]
-    }
   ]
 };
 
