@@ -813,14 +813,16 @@ body {
 }
 
 .basemap-toggle {
-  background: white;
-  border: 2px solid #ddd;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  padding: 10px 16px;
+  padding: 8px 12px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -828,19 +830,23 @@ body {
 }
 
 .basemap-toggle:hover {
-  background: #f0f0f0;
-  border-color: #3b82f6;
+  background: rgba(40, 40, 40, 0.95);
+  border-color: rgba(59, 130, 246, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
 }
 
 .basemap-dropdown {
   position: absolute;
   top: 50px;
   left: 0;
-  background: white;
+  background: rgba(20, 20, 20, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
   padding: 8px;
-  min-width: 160px;
+  min-width: 140px;
   display: none;
   flex-direction: column;
   gap: 4px;
@@ -851,13 +857,14 @@ body {
 }
 
 .basemap-option {
-  background: white;
-  border: none;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 6px;
-  padding: 10px 12px;
+  padding: 8px 10px;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
+  color: #e5e7eb;
   text-align: left;
   transition: all 0.2s ease;
   display: flex;
@@ -866,12 +873,14 @@ body {
 }
 
 .basemap-option:hover {
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
 }
 
 .basemap-option.active {
-  background: #3b82f6;
-  color: white;
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+  color: #ffffff;
 }
 
 /* Responsive */
