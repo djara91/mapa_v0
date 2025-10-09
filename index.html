@@ -17,26 +17,31 @@
 
     //Selector estilo de mapa 
     <div class="basemap-selector">
-      <button class="basemap-btn active" data-style="mapbox://styles/mapbox/streets-v12">
-        <span>🗺️</span> Calles
+      <button class="basemap-toggle" id="basemapToggle">
+      🗺️ Estilo de Mapa
       </button>
-      <button class="basemap-btn" data-style="mapbox://styles/mapbox/outdoors-v12">
-        <span>🏔️</span> Relieve
-      </button>
-      <button class="basemap-btn" data-style="mapbox://styles/mapbox/satellite-v9">
-        <span>🛰️</span> Satélite
-      </button>
-      <button class="basemap-btn" data-style="mapbox://styles/mapbox/satellite-streets-v12">
-        <span>🌍</span> Híbrido
-      </button>
-      <button class="basemap-btn" data-style="mapbox://styles/mapbox/light-v11">
-        <span>⚪</span> Claro
-      </button>
-      <button class="basemap-btn" data-style="mapbox://styles/mapbox/dark-v11">
-        <span>⚫</span> Oscuro
-      </button>
-    </div>
-    
+      <div class="basemap-dropdown" id="basemapDropdown">
+       <button class="basemap-option active" data-style="mapbox://styles/mapbox/streets-v12">
+        🗺️ Calles
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/outdoors-v12">
+        🏔️ Relieve
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/satellite-v9">
+        🛰️ Satélite
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/satellite-streets-v12">
+        🌍 Híbrido
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/light-v11">
+        ⚪ Claro
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/dark-v11">
+        ⚫ Oscuro
+       </button>
+     </div>
+   </div>
+  
     <div class="loading-overlay" id="loadingOverlay">
         <div class="spinner"></div>
         <p>Cargando mapa...</p>
