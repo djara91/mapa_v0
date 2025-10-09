@@ -534,8 +534,18 @@ map.on('load', () => {
         15, 3,
         20, 4
       ]);
+
+      map.setPaintProperty(layer.id, 'circle-stroke-width', [
+        'interpolate',
+        ['linear'],
+        ['zoom'],
+        1, 0,      // Sin borde en zoom muy alejado
+        5, 0.5,    // Borde muy delgado
+        10, 1,     // Borde normal
+        15, 1.5,   // Borde más grueso
+        20, 2      // Borde grueso en zoom cercano
+      ]);
     
-      map.setPaintProperty(layer.id, 'circle-stroke-width', 0);
     }
           
     // Cambiar cursor
