@@ -523,7 +523,7 @@ map.on('load', () => {
     }
 
     // Cambiar tamaño punto zoom-out
-    if (layer.type === 'circle') {
+    if (layer.type === 'circle' && layer.id !== 'sitios-priorizados') {
       map.setPaintProperty(layer.id, 'circle-radius', [
         'interpolate',
         ['linear'],
