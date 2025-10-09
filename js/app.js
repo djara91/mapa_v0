@@ -506,11 +506,23 @@ document.querySelectorAll('.basemap-option').forEach(btn => {
     
     // Cuando el nuevo estilo cargue, restaurar las capas
     map.once('style.load', () => {
+      // NUEVO: Recargar imagen del pin amarillo
+      map.loadImage(
+        './images/pin-amarillo.png',
+        (error, image) => {
+          if (error) {
+            console.error('Error cargando imagen:', error);
+            return;
+          }
+          map.addImage('sitios-marker', image);
+        }
+      );
+
       config.layers.forEach(layer => {
         if (!map.getSource(layer.id)) {
           map.addSource(layer.id, {
             type: 'vector',
-            url: `mapbox://${layer.tilesetId}`
+            url: `mapbox://${layer.tilesetId}?v=${new Date().getTime()}`
           });
         }
         
@@ -525,8 +537,58 @@ document.querySelectorAll('.basemap-option').forEach(btn => {
             },
             paint: layer.paint
           };
+
+          // NUEVO: Configurar pin amarillo para sitios priorizados
+          if (layer.id === 'sitios-priorizados') {
+            layerConfig.type = 'symbol';
+            layerConfig.layout = {
+              'icon-image': 'sitios-marker',
+              'icon-size': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                1, 0.5,
+                5, 1,
+                10, 2,
+                15, 3,
+                20, 4
+              ],
+              'icon-allow-overlap': true,
+              'visibility': 'none'
+            };
+            delete layerConfig.paint;
+          }
           
           map.addLayer(layerConfig);
+
+          // NUEVO: Mover sitios priorizados al tope
+          if (layer.id === 'sitios-priorizados') {
+            map.moveLayer('sitios-priorizados');
+          }
+
+          // NUEVO: Tamaño responsivo de puntos con zoom
+          if (layer.type === 'circle' && layer.id !== 'sitios-priorizados') {
+            map.setPaintProperty(layer.id, 'circle-radius', [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              1, 0.5,
+              5, 1,
+              10, 2,
+              15, 3,
+              20, 4
+            ]);
+            map.setPaintProperty(layer.id, 'circle-stroke-width', [
+              'interpolate',
+              ['linear'],
+              ['zoom'],
+              1, 0,
+              5, 0.5,
+              10, 1,
+              15, 1.5,
+              20, 2
+            ]);
+          }
           
           // Restaurar visibilidad
           const savedLayer = currentLayers.find(l => l.id === layer.id);
@@ -535,11 +597,6 @@ document.querySelectorAll('.basemap-option').forEach(btn => {
           }
         }
       });
-      
-      // Mover sitios priorizados al tope
-      if (map.getLayer('sitios-priorizados')) {
-        map.moveLayer('sitios-priorizados');
-      }
     });
     
     // Actualizar botón activo
