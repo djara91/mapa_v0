@@ -498,7 +498,7 @@ map.on('load', () => {
     if (layer.id === 'sitios-priorizados') {
       layerConfig.type = 'symbol';
       layerConfig.layout = {
-        'icon-image': 'marker-15', // Ícono de marcador
+        'icon-image': 'marker', // Ícono de marcador
         'icon-size': [
           'interpolate',
           ['linear'],
