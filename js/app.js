@@ -473,6 +473,18 @@ Object.keys(categories).forEach(categoryName => {
 map.on('load', () => {
   // Ocultar loading
   document.getElementById('loadingOverlay').classList.add('hidden');
+
+  //Pin amarillo para sppc
+  map.loadImage(
+    './images/pin-amarillo.png',
+    (error, image) => {
+      if (error) {
+        console.error('Error cargando imagen:', error);
+        return;
+      }
+      map.addImage('sitios-marker', image);
+    }
+  );
   
   // Agregar todas las capas
   config.layers.forEach(layer => {
@@ -498,7 +510,7 @@ map.on('load', () => {
     if (layer.id === 'sitios-priorizados') {
       layerConfig.type = 'symbol';
       layerConfig.layout = {
-        'icon-image': 'marker', // Ícono de marcador
+        'icon-image': 'sitios-marker', // Ícono de marcador
         'icon-size': [
           'interpolate',
           ['linear'],
