@@ -463,6 +463,7 @@ body {
   flex: 1;
   overflow-y: auto;
   padding: 16px;
+  padding-top: 16px;
 }
 
 /* SUMMARY */
@@ -934,6 +935,10 @@ body {
     margin-bottom: 0px;
     padding-bottom: 0px;
     border-bottom: none;
+}
+
+.filter-section:first-child {
+    margin-top: 20px;  
 }
 
 .filter-section:last-child {
