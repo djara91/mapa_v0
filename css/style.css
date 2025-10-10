@@ -520,6 +520,7 @@ body {
   font-weight: 600;
   letter-spacing: 0.5px;
   margin-bottom: 10px;
+  margin-top: 0;
   text-transform: uppercase;
 }
 
@@ -1183,5 +1184,5 @@ body {
     font-weight: 400;
     font-size: 11px;
     font-style: italic;
-    text-transform: none;
+    text-transform: none !important;
 }
