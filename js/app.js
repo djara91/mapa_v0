@@ -1584,12 +1584,20 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleBtn?.addEventListener('click', () => {
         panel?.classList.add('open');
     });
+
+    const toggleLayersBtn = document.getElementById('toggleLayersPanel');
+    const closeLayersBtn = document.getElementById('closeLayersPanel');
+    const layersPanel = document.getElementById('control-panel');
     
-    closeBtn?.addEventListener('click', () => {
-        panel?.classList.remove('open');
+    toggleLayersBtn?.addEventListener('click', () => {
+        layersPanel?.classList.add('open');
+    });
+    
+    closeLayersBtn?.addEventListener('click', () => {
+        layersPanel?.classList.remove('open');
     });
 });
-
+  
 function escapeHtml(text) {
     const div = document.createElement('div');
     div.textContent = text;
