@@ -1183,4 +1183,5 @@ body {
     font-weight: 400;
     font-size: 11px;
     font-style: italic;
+    text-transform: none;
 }
