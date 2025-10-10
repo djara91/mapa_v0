@@ -1880,18 +1880,4 @@ function applySitiosPriorizadosFilters() {
         proceso: sitiosPriorizadosFilter.proceso.length,
         contaminante: sitiosPriorizadosFilter.contaminante.length
     });
-}SelectAllState();
-      }
-    });
-    
-    // También manejar click directo en checkbox
-    checkbox.addEventListener('change', () => {
-      const visibility = checkbox.checked ? 'visible' : 'none';
-      if (map.getLayer(layer.id)) {
-        map.setLayoutProperty(layer.id, 'visibility', visibility);
-      }
-      layerItem.classList.toggle('active', checkbox.checked);
-      
-      // Actualizar estado del "Seleccionar todos" solo si existe
-      if (selectAllCheckbox) {
-        update
+}
