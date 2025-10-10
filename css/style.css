@@ -1136,3 +1136,39 @@ body {
         padding: 5px 10px;
     }
 }
+/* Botón de capas flotante */
+.layers-icon-btn {
+    position: fixed;
+    top: 20px;
+    right: 70px; /* A la izquierda del botón de filtros */
+    z-index: 999;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    border: none;
+    border-radius: 12px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    transition: all 0.3s ease;
+}
+
+.layers-icon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+}
+
+.layers-icon-btn:active {
+    transform: translateY(0);
+}
+
+.layers-icon-btn svg {
+    color: white;
+}
+
+/* Ajustar el panel existente para que funcione como el de filtros */
+#control-panel {
+    /* Mantiene los estilos de .filter-panel-comuna */
+}
