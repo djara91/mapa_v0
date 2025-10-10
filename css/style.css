@@ -470,7 +470,7 @@ body {
   background: #111827;
   padding: 12px 16px;
   border-radius: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
   display: none;
   flex-direction: row;
   justify-content: space-between;
@@ -509,7 +509,7 @@ body {
 
 /* SEARCH SECTION */
 .search-section {
-  margin-bottom: 16px;
+  margin-bottom: 5px;
 }
 
 .search-section label {
@@ -941,10 +941,11 @@ body {
 }
 
 .filter-section h4 {
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     color: #1f2937;
     margin-bottom: 8px;
+    margin-top: 0;
 }
 
 .filter-note-small {
@@ -964,7 +965,7 @@ body {
     padding: 20px;
     border-radius: 12px;
     border: 3px solid #eab308 !important;
-    margin-top: 25px;
+    margin-top: 12px;
     box-shadow: 0 4px 12px rgba(234, 179, 8, 0.2);
 }
 
