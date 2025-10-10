@@ -1590,6 +1590,18 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function unescapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerHTML = text;
+    return div.textContent;
+}
+ 
 // ==========================================
 // ⭐ SISTEMA DE FILTROS PARA SITIOS PRIORIZADOS
 // ==========================================
