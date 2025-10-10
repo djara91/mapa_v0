@@ -14,8 +14,8 @@
 </head>
 <body>
     <div id="map"></div>
-
-    //Selector estilo de mapa 
+    
+    <!-- Selector estilo de mapa -->
     <div class="basemap-selector">
       <button class="basemap-toggle" id="basemapToggle">
       🗺️ Estilo de Mapa
@@ -56,9 +56,7 @@
             <!-- Las categorías se generarán dinámicamente -->
         </div>
     </div>
-    <!-- ========================================
-         NUEVO: PANEL DE FILTROS POR COMUNA
-         ======================================== -->
+    
     <!-- Botón flotante para abrir filtros -->
     <button id="toggleFilterPanel" class="filter-icon-btn" title="Filtrar por comuna">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -67,46 +65,134 @@
         <span id="filterBadge" class="filter-badge-small" style="display: none;">0</span>
     </button>
     
-    <!-- Panel de Filtros por Comuna -->
+    <!-- Panel de Filtros -->
     <div id="filter-comuna-panel" class="filter-panel-comuna">
         <div class="filter-header">
-            <h3>Filtros por Comuna</h3>
+            <h3>Filtros</h3>
             <button id="closeFilterPanel" class="close-btn">×</button>
         </div>
         
         <div class="filter-content">
-
             <!-- Info de uso -->
             <div class="filter-hint">
                 💡 <strong>Hint:</strong> Activa la capa y luego aplica el filtro
             </div>
-                      
-            <!-- Resumen de filtros activos -->
-            <div id="comunaSummary" class="filter-summary">
-                <span><strong id="comunaFilterCount">0</strong> comuna(s) seleccionada(s)</span>
-                <button id="clearAllComunas">Limpiar</button>
-            </div>
             
-            <!-- Buscador de comunas -->
-            <div class="search-section">
-                <label>Buscar Comuna</label>
-                <div class="search-container">
-                    <input 
-                        type="text" 
-                        id="comunaSearchInput" 
-                        placeholder="Escribe para buscar..."
-                        autocomplete="off"
-                    >
-                    <button id="clearComunaSearch" class="clear-search">×</button>
-                    
-                    <!-- Dropdown de sugerencias -->
-                    <div id="comunaDropdown" class="dropdown">
-                        <div id="comunaDropdownContent"></div>
-                    </div>
+            <!-- ==========================================
+                 FILTRO POR COMUNA
+                 ========================================== -->
+            <div class="filter-section">
+                <h4>📍 Filtro por Comuna</h4>
+                <p class="filter-note-small">Se aplica a todas las capas excepto Predios</p>
+                
+                <!-- Resumen de filtros activos -->
+                <div id="comunaSummary" class="filter-summary">
+                    <span><strong id="comunaFilterCount">0</strong> comuna(s) seleccionada(s)</span>
+                    <button id="clearAllComunas">Limpiar</button>
                 </div>
                 
-                <!-- Tags de comunas seleccionadas -->
-                <div id="selectedComunasTags" class="selected-tags"></div>
+                <!-- Buscador de comunas -->
+                <div class="search-section">
+                    <label>Buscar Comuna</label>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="comunaSearchInput" 
+                            placeholder="Escribe para buscar..."
+                            autocomplete="off"
+                        >
+                        <button id="clearComunaSearch" class="clear-search">×</button>
+                        
+                        <!-- Dropdown de sugerencias -->
+                        <div id="comunaDropdown" class="dropdown">
+                            <div id="comunaDropdownContent"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tags de comunas seleccionadas -->
+                    <div id="selectedComunasTags" class="selected-tags"></div>
+                </div>
+            </div>
+            
+            <!-- ==========================================
+                 FILTRO DE SITIOS PRIORIZADOS
+                 ========================================== -->
+            <div class="filter-section sitios-filter">
+                <h4>⚠️ Filtro Sitios Priorizados</h4>
+                <p class="filter-note-small">Este filtro se aplica exclusivamente a la capa de Sitios Priorizados</p>
+                
+                <!-- Nombre SPPC -->
+                <div class="filter-group">
+                    <label>Nombre SPPC:</label>
+                    <input 
+                        type="text" 
+                        id="sitios-nombre-search" 
+                        class="filter-input" 
+                        placeholder="Buscar nombre..."
+                    >
+                    <select id="sitios-nombre-select" class="filter-select">
+                        <option value="">Selecciona nombre</option>
+                    </select>
+                </div>
+                
+                <!-- Empresa/Titular -->
+                <div class="filter-group">
+                    <label>Empresa/Titular:</label>
+                    <input 
+                        type="text" 
+                        id="sitios-empresa-search" 
+                        class="filter-input" 
+                        placeholder="Buscar empresa..."
+                    >
+                    <select id="sitios-empresa-select" class="filter-select">
+                        <option value="">Selecciona empresa</option>
+                    </select>
+                </div>
+                
+                <!-- Actividad Contaminante -->
+                <div class="filter-group">
+                    <label>Actividad Contaminante:</label>
+                    <input 
+                        type="text" 
+                        id="sitios-actividad-search" 
+                        class="filter-input" 
+                        placeholder="Buscar actividad..."
+                    >
+                    <select id="sitios-actividad-select" class="filter-select">
+                        <option value="">Selecciona actividad</option>
+                    </select>
+                </div>
+                
+                <!-- Proceso Industrial -->
+                <div class="filter-group">
+                    <label>Proceso Industrial:</label>
+                    <input 
+                        type="text" 
+                        id="sitios-proceso-search" 
+                        class="filter-input" 
+                        placeholder="Buscar proceso..."
+                    >
+                    <select id="sitios-proceso-select" class="filter-select">
+                        <option value="">Selecciona proceso</option>
+                    </select>
+                </div>
+                
+                <!-- Contaminante -->
+                <div class="filter-group">
+                    <label>Contaminante:</label>
+                    <input 
+                        type="text" 
+                        id="sitios-contaminante-search" 
+                        class="filter-input" 
+                        placeholder="Buscar contaminante..."
+                    >
+                    <select id="sitios-contaminante-select" class="filter-select">
+                        <option value="">Selecciona contaminante</option>
+                    </select>
+                </div>
+                
+                <!-- Tags de filtros seleccionados -->
+                <div id="selected-sitios-filters" class="selected-filters"></div>
             </div>
         </div>
         
@@ -120,4 +206,3 @@
     <script src="js/app.js"></script>
 </body>
 </html>
-
