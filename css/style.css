@@ -928,3 +928,213 @@ body {
     text-align: center;
     line-height: 14px;
 }
+/* ============================================
+   AGREGAR ESTOS ESTILOS AL FINAL DE TU style.css
+   ============================================ */
+
+/* Secciones de filtros */
+.filter-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.filter-section:last-child {
+    border-bottom: none;
+}
+
+.filter-section h4 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.filter-note-small {
+    font-size: 11px;
+    color: #6b7280;
+    margin-bottom: 12px;
+    font-style: italic;
+    padding: 6px 10px;
+    background: #f3f4f6;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Sección del filtro de Sitios Priorizados */
+.sitios-filter {
+    background: linear-gradient(135deg, #fef3c7 0%, #fef08a 100%);
+    padding: 20px;
+    border-radius: 12px;
+    border: 3px solid #eab308 !important;
+    margin-top: 25px;
+    box-shadow: 0 4px 12px rgba(234, 179, 8, 0.2);
+}
+
+.sitios-filter h4 {
+    color: #ca8a04;
+    font-size: 18px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.sitios-filter .filter-note-small {
+    background: #fef9e7;
+    color: #854d0e;
+    border-left: 3px solid #eab308;
+    display: block;
+}
+
+.filter-group {
+    margin-bottom: 16px;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #78350f;
+    margin-bottom: 6px;
+}
+
+.filter-input,
+.filter-select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 2px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+    font-family: inherit;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+    outline: none;
+    border-color: #eab308;
+    box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.15);
+}
+
+.filter-input {
+    margin-bottom: 8px;
+}
+
+.filter-input::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+.filter-select {
+    cursor: pointer;
+}
+
+.filter-select:disabled {
+    background: #f3f4f6;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.filter-select option {
+    padding: 8px;
+}
+
+.filter-select option[style*="display: none"] {
+    display: none !important;
+}
+
+/* Tags de filtros seleccionados */
+.selected-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 14px;
+    min-height: 24px;
+    padding-top: 8px;
+    border-top: 2px dashed #fbbf24;
+}
+
+.filter-tag {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(135deg, #eab308 0%, #f59e0b 100%);
+    color: #ffffff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    gap: 8px;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 2px 6px rgba(234, 179, 8, 0.3);
+    transition: all 0.2s ease;
+}
+
+.filter-tag:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(234, 179, 8, 0.4);
+}
+
+.filter-tag small {
+    opacity: 0.95;
+    font-weight: 700;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filter-tag button {
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    line-height: 1;
+}
+
+.filter-tag button:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: scale(1.15);
+}
+
+.filter-tag button:active {
+    transform: scale(0.95);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .sitios-filter {
+        padding: 15px;
+    }
+    
+    .filter-group {
+        margin-bottom: 14px;
+    }
+    
+    .filter-tag {
+        font-size: 11px;
+        padding: 5px 10px;
+    }
+}
