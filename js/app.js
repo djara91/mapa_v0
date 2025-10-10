@@ -423,6 +423,117 @@ const config = {
         { field: 'tipoatencionestabglosa', label: 'Tipo Atención' }
       ]
     },
+
+    //Residuos - Tonos grises
+    {
+      id: 'rsd-activos',
+      name: 'Residuos sólidos domiciliarios activos',
+      category: 'Residuos',
+      tilesetId: 'djarav91.ae8u3um9',
+      sourceLayer: 'rsd_activo-52r0tx',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#71717a',
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.8
+      },
+      popupFields: [
+        { field: 'sitio_disp', label: 'Nombre' },
+        { field: 'tipo', label: 'Tipo' },
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'propietari', label: 'Propietario' },
+        { field: 'operador', label: 'Operador' },
+        { field: 'estado', label: 'Estado' }
+      ]
+    },
+    {
+      id: 'rsd-cerrados',
+      name: 'Residuos sólidos domiciliarios cerrados',
+      category: 'Residuos',
+      tilesetId: 'djarav91.4xnusz3q',
+      sourceLayer: 'rsd_cerrados-2wrvi1',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#52525b',
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.8
+      },
+      popupFields: [
+        { field: 'sitio_disp', label: 'Nombre' },
+        { field: 'tipo', label: 'Tipo' },
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'operacion', label: 'Operación' },
+        { field: 'estado', label: 'Estado' }
+      ]
+    },
+    {
+      id: 'rsd-intermedios',
+      name: 'Residuos sólidos domiciliarios intermedios',
+      category: 'Residuos',
+      tilesetId: 'djarav91.2j3ex1g9',
+      sourceLayer: 'rsd_intermedios-1py2td',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#3f3f46',
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.8
+      },
+      popupFields: [
+        { field: 'sitio_disp', label: 'Nombre' },
+        { field: 'tipo', label: 'Tipo' },
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'propietari', label: 'Propietario' },
+        { field: 'operador', label: 'Operador' },
+        { field: 'estado', label: 'Estado' }
+      ]
+    },
+    {
+      id: 'rsd-planificados',
+      name: 'Residuos sólidos domiciliarios planificados',
+      category: 'Residuos',
+      tilesetId: 'djarav91.8w7474au',
+      sourceLayer: 'rsd_planificados-2xbazg',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#a1a1aa',
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.8
+      },
+      popupFields: [
+        { field: 'sitio_disp', label: 'Nombre' },
+        { field: 'tipo', label: 'Tipo' },
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'propietari', label: 'Propietario' },
+        { field: 'operador', label: 'Operador' },
+        { field: 'estado', label: 'Estado' }
+      ]
+    },
+    {
+      id: 'vertederos-ilegales',
+      name: 'Vertederos ilegales R.M.',
+      category: 'Residuos',
+      tilesetId: 'djarav91.9nqjwp5e',
+      sourceLayer: 'vertederos_ilegales-2d3uak',
+      type: 'circle',
+      paint: {
+        'circle-radius': 6,
+        'circle-color': '#18181b',
+        'circle-stroke-width': 2,
+        'circle-stroke-color': '#ffffff',
+        'circle-opacity': 0.8
+      },
+      popupFields: [
+        { field: 'ubicacion', label: 'Ubicación' }
+      ]
+    },
   ]
 };
 
@@ -433,7 +544,8 @@ const categoryIcons = {
   'Infraestructura': '🏗️',
   'Educación': '🎓',
   'Salud': '🏥',
-  'SPPC': '⚠️'
+  'SPPC': '⚠️',
+  'Residuos': '🏭'
 };
 
 // Función para crear categoría CON "Seleccionar todos"
