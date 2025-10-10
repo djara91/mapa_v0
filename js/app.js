@@ -1585,6 +1585,10 @@ document.addEventListener('DOMContentLoaded', () => {
         panel?.classList.add('open');
     });
 
+    closeBtn?.addEventListener('click', () => {
+        panel?.classList.remove('open');
+    });
+
     const toggleLayersBtn = document.getElementById('toggleLayersPanel');
     const closeLayersBtn = document.getElementById('closeLayersPanel');
     const layersPanel = document.getElementById('control-panel');
