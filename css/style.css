@@ -928,15 +928,12 @@ body {
     text-align: center;
     line-height: 14px;
 }
-/* ============================================
-   AGREGAR ESTOS ESTILOS AL FINAL DE TU style.css
-   ============================================ */
 
 /* Secciones de filtros */
 .filter-section {
-    margin-bottom: 24px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #e5e7eb;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    border-bottom: none;
 }
 
 .filter-section:last-child {
