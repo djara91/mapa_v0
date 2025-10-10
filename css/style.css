@@ -1173,3 +1173,9 @@ body {
 #control-panel {
     /* Mantiene los estilos de .filter-panel-comuna */
 }
+.label-hint {
+    color: #6b7280;
+    font-weight: 400;
+    font-size: 11px;
+    font-style: italic;
+}
