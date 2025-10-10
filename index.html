@@ -83,7 +83,6 @@
                  ========================================== -->
             <div class="filter-section">
                 <h4>📍 Filtro por Comuna</h4>
-                <p class="filter-note-small">Se aplica a todas las capas excepto Predios</p>
                 
                 <!-- Resumen de filtros activos -->
                 <div id="comunaSummary" class="filter-summary">
@@ -122,73 +121,93 @@
                 <p class="filter-note-small">Este filtro se aplica exclusivamente a la capa de Sitios Priorizados</p>
                 
                 <!-- Nombre SPPC -->
-                <div class="filter-group">
+                <div class="search-section">
                     <label>Nombre SPPC:</label>
-                    <input 
-                        type="text" 
-                        id="sitios-nombre-search" 
-                        class="filter-input" 
-                        placeholder="Buscar nombre..."
-                    >
-                    <select id="sitios-nombre-select" class="filter-select">
-                        <option value="">Selecciona nombre</option>
-                    </select>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-nombre-search" 
+                            class="filter-input" 
+                            placeholder="Buscar nombre..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('nombre')">×</button>
+                        <div class="dropdown" id="sitios-nombre-dropdown">
+                            <div id="sitios-nombre-content"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Empresa/Titular -->
-                <div class="filter-group">
+                <div class="search-section">
                     <label>Empresa/Titular:</label>
-                    <input 
-                        type="text" 
-                        id="sitios-empresa-search" 
-                        class="filter-input" 
-                        placeholder="Buscar empresa..."
-                    >
-                    <select id="sitios-empresa-select" class="filter-select">
-                        <option value="">Selecciona empresa</option>
-                    </select>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-empresa-search" 
+                            class="filter-input" 
+                            placeholder="Buscar empresa..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('empresa')">×</button>
+                        <div class="dropdown" id="sitios-empresa-dropdown">
+                            <div id="sitios-empresa-content"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Actividad Contaminante -->
-                <div class="filter-group">
+                <div class="search-section">
                     <label>Actividad Contaminante:</label>
-                    <input 
-                        type="text" 
-                        id="sitios-actividad-search" 
-                        class="filter-input" 
-                        placeholder="Buscar actividad..."
-                    >
-                    <select id="sitios-actividad-select" class="filter-select">
-                        <option value="">Selecciona actividad</option>
-                    </select>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-actividad-search" 
+                            class="filter-input" 
+                            placeholder="Buscar actividad..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('actividad')">×</button>
+                        <div class="dropdown" id="sitios-actividad-dropdown">
+                            <div id="sitios-actividad-content"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Proceso Industrial -->
-                <div class="filter-group">
+                <div class="search-section">
                     <label>Proceso Industrial:</label>
-                    <input 
-                        type="text" 
-                        id="sitios-proceso-search" 
-                        class="filter-input" 
-                        placeholder="Buscar proceso..."
-                    >
-                    <select id="sitios-proceso-select" class="filter-select">
-                        <option value="">Selecciona proceso</option>
-                    </select>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-proceso-search" 
+                            class="filter-input" 
+                            placeholder="Buscar proceso..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('proceso')">×</button>
+                        <div class="dropdown" id="sitios-proceso-dropdown">
+                            <div id="sitios-proceso-content"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Contaminante -->
-                <div class="filter-group">
+                <div class="search-section">
                     <label>Contaminante:</label>
-                    <input 
-                        type="text" 
-                        id="sitios-contaminante-search" 
-                        class="filter-input" 
-                        placeholder="Buscar contaminante..."
-                    >
-                    <select id="sitios-contaminante-select" class="filter-select">
-                        <option value="">Selecciona contaminante</option>
-                    </select>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-contaminante-search" 
+                            class="filter-input" 
+                            placeholder="Buscar contaminante..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('contaminante')">×</button>
+                        <div class="dropdown" id="sitios-contaminante-dropdown">
+                            <div id="sitios-contaminante-content"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Tags de filtros seleccionados -->
