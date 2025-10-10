@@ -1598,59 +1598,87 @@ function loadSitiosPriorizadosData() {
     console.log('🔍 Cargando datos de Sitios Priorizados...');
     
     const checkLayer = setInterval(() => {
-        if (map.getLayer('sitios-priorizados')) {
+        if (map.getLayer('sitios-priorizados') && map.isSourceLoaded('sitios-priorizados')) {
             clearInterval(checkLayer);
             
-            try {
-                const features = map.querySourceFeatures('sitios-priorizados', {
-                    sourceLayer: 'sitios_priorizados-9y3v4s'
-                });
-                
-                console.log(`📊 Encontradas ${features.length} features de Sitios Priorizados`);
-                
-                const sets = {
-                    nombres: new Set(),
-                    empresas: new Set(),
-                    actividades: new Set(),
-                    procesos: new Set(),
-                    contaminantes: new Set()
-                };
-                
-                features.forEach(feature => {
-                    const props = feature.properties;
-                    
-                    if (props['nombre sppc']) sets.nombres.add(props['nombre sppc']);
-                    if (props['nombre empresa o titular']) sets.empresas.add(props['nombre empresa o titular']);
-                    if (props['act potencial contaminante i']) sets.actividades.add(props['act potencial contaminante i']);
-                    if (props['id proc indust pot contaminantes i']) sets.procesos.add(props['id proc indust pot contaminantes i']);
-                    if (props['potenciales contaminantes i']) sets.contaminantes.add(props['potenciales contaminantes i']);
-                });
-                
-                sitiosPriorizadosData = {
-                    nombres: Array.from(sets.nombres).sort(),
-                    empresas: Array.from(sets.empresas).sort(),
-                    actividades: Array.from(sets.actividades).sort(),
-                    procesos: Array.from(sets.procesos).sort(),
-                    contaminantes: Array.from(sets.contaminantes).sort()
-                };
-                
-                console.log('✅ Datos de Sitios Priorizados cargados:', {
-                    nombres: sitiosPriorizadosData.nombres.length,
-                    empresas: sitiosPriorizadosData.empresas.length,
-                    actividades: sitiosPriorizadosData.actividades.length,
-                    procesos: sitiosPriorizadosData.procesos.length,
-                    contaminantes: sitiosPriorizadosData.contaminantes.length
-                });
-                
-                setupSitiosPriorizadosFilter();
-                
-            } catch (error) {
-                console.error('❌ Error cargando datos de Sitios Priorizados:', error);
+            // IMPORTANTE: Hacer la capa visible temporalmente para poder consultar
+            const wasVisible = map.getLayoutProperty('sitios-priorizados', 'visibility') === 'visible';
+            if (!wasVisible) {
+                map.setLayoutProperty('sitios-priorizados', 'visibility', 'visible');
             }
+            
+            // Esperar un momento para que se renderice
+            setTimeout(() => {
+                try {
+                    // Obtener todas las features renderizadas en el viewport actual
+                    const features = map.queryRenderedFeatures({
+                        layers: ['sitios-priorizados']
+                    });
+                    
+                    console.log(`📊 Encontradas ${features.length} features visibles de Sitios Priorizados`);
+                    
+                    if (features.length === 0) {
+                        console.warn('⚠️ No se encontraron features. Asegúrate de que la capa esté activa y visible en el mapa.');
+                        // Restaurar visibilidad
+                        if (!wasVisible) {
+                            map.setLayoutProperty('sitios-priorizados', 'visibility', 'none');
+                        }
+                        return;
+                    }
+                    
+                    const sets = {
+                        nombres: new Set(),
+                        empresas: new Set(),
+                        actividades: new Set(),
+                        procesos: new Set(),
+                        contaminantes: new Set()
+                    };
+                    
+                    features.forEach(feature => {
+                        const props = feature.properties;
+                        
+                        if (props['nombre sppc']) sets.nombres.add(props['nombre sppc']);
+                        if (props['nombre empresa o titular']) sets.empresas.add(props['nombre empresa o titular']);
+                        if (props['act potencial contaminante i']) sets.actividades.add(props['act potencial contaminante i']);
+                        if (props['id proc indust pot contaminantes i']) sets.procesos.add(props['id proc indust pot contaminantes i']);
+                        if (props['potenciales contaminantes i']) sets.contaminantes.add(props['potenciales contaminantes i']);
+                    });
+                    
+                    sitiosPriorizadosData = {
+                        nombres: Array.from(sets.nombres).sort(),
+                        empresas: Array.from(sets.empresas).sort(),
+                        actividades: Array.from(sets.actividades).sort(),
+                        procesos: Array.from(sets.procesos).sort(),
+                        contaminantes: Array.from(sets.contaminantes).sort()
+                    };
+                    
+                    console.log('✅ Datos de Sitios Priorizados cargados:', {
+                        nombres: sitiosPriorizadosData.nombres.length,
+                        empresas: sitiosPriorizadosData.empresas.length,
+                        actividades: sitiosPriorizadosData.actividades.length,
+                        procesos: sitiosPriorizadosData.procesos.length,
+                        contaminantes: sitiosPriorizadosData.contaminantes.length
+                    });
+                    
+                    // Restaurar visibilidad original
+                    if (!wasVisible) {
+                        map.setLayoutProperty('sitios-priorizados', 'visibility', 'none');
+                    }
+                    
+                    setupSitiosPriorizadosFilter();
+                    
+                } catch (error) {
+                    console.error('❌ Error cargando datos de Sitios Priorizados:', error);
+                    // Restaurar visibilidad en caso de error
+                    if (!wasVisible) {
+                        map.setLayoutProperty('sitios-priorizados', 'visibility', 'none');
+                    }
+                }
+            }, 1000);
         }
     }, 500);
     
-    setTimeout(() => clearInterval(checkLayer), 10000);
+    setTimeout(() => clearInterval(checkLayer), 15000);
 }
 
 function setupSitiosPriorizadosFilter() {
