@@ -1591,13 +1591,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ==========================================
-// ⭐ NUEVO: SISTEMA DE FILTROS PARA SITIOS PRIORIZADOS
+// ⭐ SISTEMA DE FILTROS PARA SITIOS PRIORIZADOS
 // ==========================================
 
 function loadSitiosPriorizadosData() {
     console.log('🔍 Cargando datos de Sitios Priorizados...');
     
-    // Esperar a que la capa esté lista
     const checkLayer = setInterval(() => {
         if (map.getLayer('sitios-priorizados')) {
             clearInterval(checkLayer);
@@ -1607,7 +1606,7 @@ function loadSitiosPriorizadosData() {
                     sourceLayer: 'sitios_priorizados-9y3v4s'
                 });
                 
-                console.log(`📊 Encontradas ${features.length} features`);
+                console.log(`📊 Encontradas ${features.length} features de Sitios Priorizados`);
                 
                 const sets = {
                     nombres: new Set(),
@@ -1620,21 +1619,11 @@ function loadSitiosPriorizadosData() {
                 features.forEach(feature => {
                     const props = feature.properties;
                     
-                    if (props['nombre sppc']) {
-                        sets.nombres.add(props['nombre sppc']);
-                    }
-                    if (props['nombre empresa o titular']) {
-                        sets.empresas.add(props['nombre empresa o titular']);
-                    }
-                    if (props['act potencial contaminante i']) {
-                        sets.actividades.add(props['act potencial contaminante i']);
-                    }
-                    if (props['id proc indust pot contaminantes i']) {
-                        sets.procesos.add(props['id proc indust pot contaminantes i']);
-                    }
-                    if (props['potenciales contaminantes i']) {
-                        sets.contaminantes.add(props['potenciales contaminantes i']);
-                    }
+                    if (props['nombre sppc']) sets.nombres.add(props['nombre sppc']);
+                    if (props['nombre empresa o titular']) sets.empresas.add(props['nombre empresa o titular']);
+                    if (props['act potencial contaminante i']) sets.actividades.add(props['act potencial contaminante i']);
+                    if (props['id proc indust pot contaminantes i']) sets.procesos.add(props['id proc indust pot contaminantes i']);
+                    if (props['potenciales contaminantes i']) sets.contaminantes.add(props['potenciales contaminantes i']);
                 });
                 
                 sitiosPriorizadosData = {
@@ -1645,7 +1634,7 @@ function loadSitiosPriorizadosData() {
                     contaminantes: Array.from(sets.contaminantes).sort()
                 };
                 
-                console.log('✅ Datos cargados:', {
+                console.log('✅ Datos de Sitios Priorizados cargados:', {
                     nombres: sitiosPriorizadosData.nombres.length,
                     empresas: sitiosPriorizadosData.empresas.length,
                     actividades: sitiosPriorizadosData.actividades.length,
@@ -1653,105 +1642,142 @@ function loadSitiosPriorizadosData() {
                     contaminantes: sitiosPriorizadosData.contaminantes.length
                 });
                 
-                populateSitiosPriorizadosSelects();
+                setupSitiosPriorizadosFilter();
                 
             } catch (error) {
-                console.error('❌ Error cargando datos:', error);
+                console.error('❌ Error cargando datos de Sitios Priorizados:', error);
             }
         }
     }, 500);
     
-    // Timeout de seguridad
     setTimeout(() => clearInterval(checkLayer), 10000);
 }
 
 function setupSitiosPriorizadosFilter() {
-    const filterTypes = [
-        { id: 'nombre', label: 'nombre SPPC' },
-        { id: 'empresa', label: 'empresa/titular' },
-        { id: 'actividad', label: 'actividad' },
-        { id: 'proceso', label: 'proceso' },
-        { id: 'contaminante', label: 'contaminante' }
-    ];
+    const filterTypes = ['nombre', 'empresa', 'actividad', 'proceso', 'contaminante'];
     
     filterTypes.forEach(type => {
-        const select = document.getElementById(`sitios-${type.id}-select`);
-        const search = document.getElementById(`sitios-${type.id}-search`);
+        const searchInput = document.getElementById(`sitios-${type}-search`);
+        const dropdown = document.getElementById(`sitios-${type}-dropdown`);
+        const dropdownContent = document.getElementById(`sitios-${type}-content`);
         
-        if (!select || !search) {
-            console.warn(`⚠️ No se encontraron elementos para ${type.id}`);
+        if (!searchInput || !dropdown || !dropdownContent) {
+            console.warn(`⚠️ Elementos no encontrados para ${type}`);
             return;
         }
         
-        search.addEventListener('input', () => filterSitiosOptions(type.id));
-        
-        select.addEventListener('change', (e) => {
-            const value = e.target.value;
-            if (value && !sitiosPriorizadosFilter[type.id].includes(value)) {
-                sitiosPriorizadosFilter[type.id].push(value);
-                updateSelectedSitiosFilters();
-                applySitiosPriorizadosFilters();
+        // Función para renderizar dropdown
+        function renderDropdown(filter = '') {
+            const dataKey = type === 'nombre' ? 'nombres' : 
+                           type === 'empresa' ? 'empresas' :
+                           type === 'actividad' ? 'actividades' :
+                           type === 'proceso' ? 'procesos' : 'contaminantes';
+            
+            const data = sitiosPriorizadosData[dataKey] || [];
+            const filtered = data.filter(item => 
+                item.toLowerCase().includes(filter.toLowerCase()) &&
+                !sitiosPriorizadosFilter[type].includes(item)
+            );
+            
+            if (filtered.length === 0) {
+                dropdownContent.innerHTML = '<div class="no-results">No se encontraron resultados</div>';
+                return;
             }
-            e.target.value = '';
-            search.value = '';
+            
+            const results = filtered.slice(0, 50).map(item => 
+                `<div class="dropdown-item" data-value="${escapeHtml(item)}">${item}</div>`
+            ).join('');
+            
+            if (filtered.length > 50) {
+                dropdownContent.innerHTML = results + `<div class="no-results">+${filtered.length - 50} resultados más...</div>`;
+            } else {
+                dropdownContent.innerHTML = results;
+            }
+            
+            // Event listeners para items
+            document.querySelectorAll(`#sitios-${type}-content .dropdown-item`).forEach(item => {
+                item.addEventListener('click', () => {
+                    selectSitiosItem(type, unescapeHtml(item.dataset.value));
+                });
+            });
+        }
+        
+        // Input event
+        searchInput.addEventListener('input', (e) => {
+            const value = e.target.value;
+            if (value.length > 0) {
+                renderDropdown(value);
+                dropdown.classList.add('visible');
+            } else {
+                dropdown.classList.remove('visible');
+            }
+        });
+        
+        // Focus event
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.length > 0) {
+                renderDropdown(searchInput.value);
+                dropdown.classList.add('visible');
+            }
+        });
+        
+        // Enter key
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (dropdown.classList.contains('visible')) {
+                    const firstItem = dropdown.querySelector('.dropdown-item');
+                    if (firstItem) {
+                        selectSitiosItem(type, unescapeHtml(firstItem.dataset.value));
+                    }
+                }
+            }
+            if (e.key === 'Escape') {
+                dropdown.classList.remove('visible');
+                searchInput.blur();
+            }
         });
     });
     
-    console.log('✅ Filtro de Sitios Priorizados inicializado');
-}
-
-function populateSitiosPriorizadosSelects() {
-    const mapping = {
-        nombre: { data: sitiosPriorizadosData.nombres, label: 'nombre' },
-        empresa: { data: sitiosPriorizadosData.empresas, label: 'empresa' },
-        actividad: { data: sitiosPriorizadosData.actividades, label: 'actividad' },
-        proceso: { data: sitiosPriorizadosData.procesos, label: 'proceso' },
-        contaminante: { data: sitiosPriorizadosData.contaminantes, label: 'contaminante' }
-    };
-    
-    Object.keys(mapping).forEach(type => {
-        const select = document.getElementById(`sitios-${type}-select`);
-        if (!select) return;
-        
-        select.innerHTML = `<option value="">Selecciona ${mapping[type].label}</option>`;
-        
-        mapping[type].data.forEach(value => {
-            const option = document.createElement('option');
-            option.value = value;
-            option.textContent = value;
-            select.appendChild(option);
-        });
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            document.querySelectorAll('.sitios-filter .dropdown').forEach(d => {
+                d.classList.remove('visible');
+            });
+        }
     });
     
-    console.log('✅ Selects poblados con datos');
+    console.log('✅ Filtro de Sitios Priorizados configurado');
 }
 
-function filterSitiosOptions(type) {
-    const search = document.getElementById(`sitios-${type}-search`);
-    const select = document.getElementById(`sitios-${type}-select`);
-    
-    if (!search || !select) return;
-    
-    const searchText = search.value.toLowerCase()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "");
-    
-    const options = Array.from(select.options);
-    
-    options.forEach((option, index) => {
-        if (index === 0) return; // Skip first option
+function selectSitiosItem(type, value) {
+    if (!sitiosPriorizadosFilter[type].includes(value)) {
+        sitiosPriorizadosFilter[type].push(value);
+        updateSelectedSitiosFilters();
+        applySitiosPriorizadosFilters();
         
-        const optionText = option.textContent.toLowerCase()
-            .normalize("NFD")
-            .replace(/[\u0300-\u036f]/g, "");
-        
-        option.style.display = optionText.includes(searchText) ? '' : 'none';
-    });
+        // Limpiar input y cerrar dropdown
+        const searchInput = document.getElementById(`sitios-${type}-search`);
+        const dropdown = document.getElementById(`sitios-${type}-dropdown`);
+        if (searchInput) searchInput.value = '';
+        if (dropdown) dropdown.classList.remove('visible');
+    }
+}
+
+function clearSitiosSearch(type) {
+    const searchInput = document.getElementById(`sitios-${type}-search`);
+    const dropdown = document.getElementById(`sitios-${type}-dropdown`);
+    if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+    }
+    if (dropdown) dropdown.classList.remove('visible');
 }
 
 function updateSelectedSitiosFilters() {
     const labels = {
-        nombre: 'Nombre SPPC',
+        nombre: 'Nombre',
         empresa: 'Empresa',
         actividad: 'Actividad',
         proceso: 'Proceso',
@@ -1777,23 +1803,10 @@ function updateSelectedSitiosFilters() {
 }
 
 function removeSitiosFilter(type, value) {
-    // Decodificar HTML entities
     const decodedValue = unescapeHtml(value);
     sitiosPriorizadosFilter[type] = sitiosPriorizadosFilter[type].filter(v => v !== decodedValue);
     updateSelectedSitiosFilters();
     applySitiosPriorizadosFilters();
-}
-
-function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-}
-
-function unescapeHtml(text) {
-    const div = document.createElement('div');
-    div.innerHTML = text;
-    return div.textContent;
 }
 
 function applySitiosPriorizadosFilters() {
@@ -1805,10 +1818,8 @@ function applySitiosPriorizadosFilters() {
     const hasFilters = Object.values(sitiosPriorizadosFilter).some(arr => arr.length > 0);
     
     if (!hasFilters) {
-        // Restaurar filtro de comuna si existe
         const currentFilter = map.getFilter('sitios-priorizados');
         if (currentFilter && Array.isArray(currentFilter) && currentFilter[0] === 'in') {
-            // Hay un filtro de comuna activo, mantenerlo
             console.log('✅ Filtros de Sitios Priorizados removidos, manteniendo filtro de comuna');
             return;
         }
@@ -1819,65 +1830,39 @@ function applySitiosPriorizadosFilters() {
     
     const filters = [];
     
-    // Filtro por nombre
     if (sitiosPriorizadosFilter.nombre.length > 0) {
-        const conditions = sitiosPriorizadosFilter.nombre.map(v => 
-            ['==', ['get', 'nombre sppc'], v]
-        );
+        const conditions = sitiosPriorizadosFilter.nombre.map(v => ['==', ['get', 'nombre sppc'], v]);
         filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
     }
     
-    // Filtro por empresa
     if (sitiosPriorizadosFilter.empresa.length > 0) {
-        const conditions = sitiosPriorizadosFilter.empresa.map(v => 
-            ['==', ['get', 'nombre empresa o titular'], v]
-        );
+        const conditions = sitiosPriorizadosFilter.empresa.map(v => ['==', ['get', 'nombre empresa o titular'], v]);
         filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
     }
     
-    // Filtro por actividad
     if (sitiosPriorizadosFilter.actividad.length > 0) {
-        const conditions = sitiosPriorizadosFilter.actividad.map(v => 
-            ['==', ['get', 'act potencial contaminante i'], v]
-        );
+        const conditions = sitiosPriorizadosFilter.actividad.map(v => ['==', ['get', 'act potencial contaminante i'], v]);
         filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
     }
     
-    // Filtro por proceso
     if (sitiosPriorizadosFilter.proceso.length > 0) {
-        const conditions = sitiosPriorizadosFilter.proceso.map(v => 
-            ['==', ['get', 'id proc indust pot contaminantes i'], v]
-        );
+        const conditions = sitiosPriorizadosFilter.proceso.map(v => ['==', ['get', 'id proc indust pot contaminantes i'], v]);
         filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
     }
     
-    // Filtro por contaminante
     if (sitiosPriorizadosFilter.contaminante.length > 0) {
-        const conditions = sitiosPriorizadosFilter.contaminante.map(v => 
-            ['==', ['get', 'potenciales contaminantes i'], v]
-        );
+        const conditions = sitiosPriorizadosFilter.contaminante.map(v => ['==', ['get', 'potenciales contaminantes i'], v]);
         filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
     }
     
-    // Combinar con filtro de comuna si existe
     const currentFilter = map.getFilter('sitios-priorizados');
-    const comunaFilter = currentFilter && Array.isArray(currentFilter) && currentFilter[0] === 'in'
-        ? currentFilter
-        : null;
+    const comunaFilter = currentFilter && Array.isArray(currentFilter) && currentFilter[0] === 'in' ? currentFilter : null;
     
     const allFilters = comunaFilter 
         ? ['all', comunaFilter, ...filters] 
-        : filters.length > 1 
-            ? ['all', ...filters]
-            : filters[0];
+        : filters.length > 1 ? ['all', ...filters] : filters[0];
     
     map.setFilter('sitios-priorizados', allFilters);
     
-    console.log('✅ Filtros aplicados a Sitios Priorizados:', {
-        nombre: sitiosPriorizadosFilter.nombre.length,
-        empresa: sitiosPriorizadosFilter.empresa.length,
-        actividad: sitiosPriorizadosFilter.actividad.length,
-        proceso: sitiosPriorizadosFilter.proceso.length,
-        contaminante: sitiosPriorizadosFilter.contaminante.length
-    });
+    console.log('✅ Filtros aplicados a Sitios Priorizados:', sitiosPriorizadosFilter);
 }
