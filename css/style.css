@@ -938,7 +938,7 @@ body {
 }
 
 .filter-section:first-child {
-    margin-top: 20px;  
+    margin-top: 0;  
 }
 
 .filter-section:last-child {
