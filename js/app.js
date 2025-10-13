@@ -423,7 +423,6 @@ const config = {
         { field: 'tipoatencionestabglosa', label: 'Tipo Atención' }
       ]
     },
-
     //Residuos - Tonos grises
     {
       id: 'rsd-activos',
@@ -537,6 +536,10 @@ const config = {
   ]
 };
 
+// ============================================
+// VARIABLES GLOBALES
+// ============================================
+
 // Iconos para categorías
 const categoryIcons = {
   'Predios': '🏘️',
@@ -547,6 +550,30 @@ const categoryIcons = {
   'SPPC': '⚠️',
   'Residuos': '🏭'
 };
+
+// Variables para filtro de comunas
+let selectedComunas = [];
+
+// ⭐ NUEVO: Variables para filtro de Sitios Priorizados
+let sitiosPriorizadosFilter = {
+    nombre: [],
+    empresa: [],
+    actividad: [],
+    proceso: [],
+    contaminante: []
+};
+
+let sitiosPriorizadosData = {
+    nombres: [],
+    empresas: [],
+    actividades: [],
+    procesos: [],
+    contaminantes: []
+};
+
+// ============================================
+// FUNCIONES DE CATEGORÍAS Y CAPAS
+// ============================================
 
 // Función para crear categoría CON "Seleccionar todos"
 function createCategory(categoryName, layers) {
@@ -608,20 +635,6 @@ function createCategory(categoryName, layers) {
         map.setLayoutProperty(layer.id, 'visibility', visibility);
       }
       
-      layerItem.classList.toggle('active', checkbox.checked);
-      
-      // Actualizar estado del "Seleccionar todos" solo si existe
-      if (selectAllCheckbox) {
-        updateSelectAllState();
-      }
-    });
-    
-    // También manejar click directo en checkbox
-    checkbox.addEventListener('change', () => {
-      const visibility = checkbox.checked ? 'visible' : 'none';
-      if (map.getLayer(layer.id)) {
-        map.setLayoutProperty(layer.id, 'visibility', visibility);
-      }
       layerItem.classList.toggle('active', checkbox.checked);
       
       // Actualizar estado del "Seleccionar todos" solo si existe
@@ -706,9 +719,12 @@ function createCategory(categoryName, layers) {
   return categoryDiv;
 }
 
+// ============================================
+// INICIALIZAR MAPA
+// ============================================
+
 // Inicializar mapa
 mapboxgl.accessToken = config.mapboxToken;
-
 const map = new mapboxgl.Map({
   container: 'map',
   style: config.mapStyle,
@@ -732,13 +748,15 @@ config.layers.forEach(layer => {
 
 // Crear panel de control
 const panelContent = document.getElementById('panelContent');
-
 Object.keys(categories).forEach(categoryName => {
   const categoryDiv = createCategory(categoryName, categories[categoryName]);
   panelContent.appendChild(categoryDiv);
 });
 
-// Selector de estilos de mapa
+// ============================================
+// SELECTOR DE ESTILOS DE MAPA
+// ============================================
+
 const basemapToggle = document.getElementById('basemapToggle');
 const basemapDropdown = document.getElementById('basemapDropdown');
 
@@ -787,7 +805,6 @@ document.querySelectorAll('.basemap-option').forEach(btn => {
           map.addImage('sitios-marker', image);
         }
       );
-
       config.layers.forEach(layer => {
         if (!map.getSource(layer.id)) {
           map.addSource(layer.id, {
@@ -807,7 +824,6 @@ document.querySelectorAll('.basemap-option').forEach(btn => {
             },
             paint: layer.paint
           };
-
           // NUEVO: Configurar pin amarillo para sitios priorizados
           if (layer.id === 'sitios-priorizados') {
             layerConfig.type = 'symbol';
@@ -830,12 +846,10 @@ document.querySelectorAll('.basemap-option').forEach(btn => {
           }
           
           map.addLayer(layerConfig);
-
           // NUEVO: Mover sitios priorizados al tope
           if (layer.id === 'sitios-priorizados') {
             map.moveLayer('sitios-priorizados');
           }
-
           // NUEVO: Tamaño responsivo de puntos con zoom
           if (layer.type === 'circle' && layer.id !== 'sitios-priorizados') {
             map.setPaintProperty(layer.id, 'circle-radius', [
@@ -878,11 +892,14 @@ document.querySelectorAll('.basemap-option').forEach(btn => {
   });
 });
 
-// Cuando el mapa cargue
+// ============================================
+// CUANDO EL MAPA CARGUE
+// ============================================
+
 map.on('load', () => {
   // Ocultar loading
   document.getElementById('loadingOverlay').classList.add('hidden');
-
+  
   //Pin amarillo para sppc
   map.loadImage(
     './images/pin-amarillo.png',
@@ -914,7 +931,6 @@ map.on('load', () => {
       },
       paint: layer.paint
     };
-
     // Icono SPPC como marcador
     if (layer.id === 'sitios-priorizados') {
       layerConfig.type = 'symbol';
@@ -937,12 +953,10 @@ map.on('load', () => {
     }
     
     map.addLayer(layerConfig);
-
     // Sitios priorizados al incio
     if (layer.id === 'sitios-priorizados') {
       map.moveLayer('sitios-priorizados');
     }
-
     // Cambiar tamaño punto zoom-out
     if (layer.type === 'circle' && layer.id !== 'sitios-priorizados') {
       map.setPaintProperty(layer.id, 'circle-radius', [
@@ -955,7 +969,6 @@ map.on('load', () => {
         15, 3,
         20, 4
       ]);
-
       map.setPaintProperty(layer.id, 'circle-stroke-width', [
         'interpolate',
         ['linear'],
@@ -1004,6 +1017,11 @@ map.on('load', () => {
     }
   });
   
+  // ⭐ NUEVO: Inicializar filtros
+  initializeFilters();
+  setupSitiosPriorizadosFilter();
+  loadSitiosPriorizadosData();
+  
   console.log('Mapa cargado correctamente con', config.layers.length, 'capas');
 });
 
@@ -1012,6 +1030,9 @@ map.on('error', (e) => {
   console.error('Error en el mapa:', e);
 });
 
+// ============================================
+// FUNCIONES DE POPUP
+// ============================================
 
 function createMultiPopup(features, lngLat) {
   let popupHTML = '';
@@ -1235,19 +1256,14 @@ const comunasChile = [
     "Punta Arenas", "Río Verde", "San Gregorio", "Timaukel", "Torres del Paine"
 ].sort();
 
-// Comunas seleccionadas
-let selectedComunas = [];
-
 // Función para obtener el nombre de columna de comuna desde popupFields
 function getComunaColumnForLayer(layer) {
     // Si no tiene popupFields, usar 'comuna' por defecto
     if (!layer.popupFields || layer.popupFields.length === 0) {
         return 'comuna';
     }
-
     // Posibles labels que indican que es un campo de comuna
     const comunaLabels = ['comuna', 'municipio', 'municipality', 'ciudad'];
-
     // Buscar en popupFields el campo que tiene label "Comuna" o similar
     const comunaField = layer.popupFields.find(fieldObj => {
         if (fieldObj.label) {
@@ -1256,11 +1272,9 @@ function getComunaColumnForLayer(layer) {
         }
         return false;
     });
-
     if (comunaField && comunaField.field) {
         return comunaField.field;
     }
-
     // Fallback: buscar por nombre de campo
     const comunaFieldByName = layer.popupFields.find(fieldObj => {
         if (fieldObj.field) {
@@ -1272,11 +1286,9 @@ function getComunaColumnForLayer(layer) {
         }
         return false;
     });
-
     if (comunaFieldByName && comunaFieldByName.field) {
         return comunaFieldByName.field;
     }
-
     // Por defecto usar 'comuna'
     return 'comuna';
 }
@@ -1287,13 +1299,10 @@ function applyFiltersToComunas() {
         console.error('❌ El mapa no está inicializado');
         return;
     }
-
     const layersToFilter = config.layers.filter(layer => 
         layer.category !== 'Predios'
     );
-
     console.log(`🔍 Aplicando filtros a ${layersToFilter.length} capas (excluyendo Predios)`);
-
     if (selectedComunas.length === 0) {
         layersToFilter.forEach(layer => {
             if (map.getLayer(layer.id)) {
@@ -1301,16 +1310,21 @@ function applyFiltersToComunas() {
             }
         });
         console.log('✓ Filtros removidos - mostrando todas las features');
+        
+        // ⭐ NUEVO: Re-aplicar filtros de sitios priorizados si existen
+        const hasSitiosFilters = Object.values(sitiosPriorizadosFilter).some(arr => arr.length > 0);
+        if (hasSitiosFilters) {
+            applySitiosPriorizadosFilters();
+        }
         return;
     }
-
+    
     let filteredCount = 0;
     
     layersToFilter.forEach(layer => {
         if (!map.getLayer(layer.id)) {
             return;
         }
-
         const comunaColumn = getComunaColumnForLayer(layer);
         
         try {
@@ -1322,7 +1336,6 @@ function applyFiltersToComunas() {
                 const variants = generateComunaVariants(comuna);
                 allVariants.push(...variants);
             });
-
             // Crear filtro con todas las variantes
             const filter = [
                 'in',
@@ -1338,8 +1351,14 @@ function applyFiltersToComunas() {
             console.warn(`  ⚠️ Error al filtrar ${layer.name}:`, error.message);
         }
     });
-
+    
     console.log(`✅ Filtros aplicados a ${filteredCount} capas`);
+    
+    // ⭐ NUEVO: Re-aplicar filtros de sitios priorizados si existen
+    const hasSitiosFilters = Object.values(sitiosPriorizadosFilter).some(arr => arr.length > 0);
+    if (hasSitiosFilters) {
+        applySitiosPriorizadosFilters();
+    }
 }
 
 // Función auxiliar para generar variantes de una comuna
@@ -1368,6 +1387,7 @@ function generateComunaVariants(comuna) {
     
     return Array.from(variants);
 }
+
 // Inicializar filtros cuando el DOM esté listo
 function initializeFilters() {
     const searchInput = document.getElementById('comunaSearchInput');
@@ -1379,35 +1399,35 @@ function initializeFilters() {
     const filterCountSpan = document.getElementById('comunaFilterCount');
     const clearAllBtn = document.getElementById('clearAllComunas');
     const applyBtn = document.getElementById('applyFiltersBtn');
-
+    
     if (!searchInput) {
         console.warn('⚠️ Elementos del filtro no encontrados en el DOM');
         return;
     }
-
+    
     // Función para renderizar el dropdown
     function renderDropdown(filter = '') {
         const filtered = comunasChile.filter(comuna => 
             comuna.toLowerCase().includes(filter.toLowerCase()) &&
             !selectedComunas.includes(comuna)
         );
-
+        
         if (filtered.length === 0) {
             dropdownContent.innerHTML = '<div class="no-results">No se encontraron comunas</div>';
             return;
         }
-
+        
         // Mostrar máximo 50 resultados para mejor performance
         const results = filtered.slice(0, 50).map(comuna => 
             `<div class="dropdown-item" data-comuna="${comuna}">${comuna}</div>`
         ).join('');
-
+        
         if (filtered.length > 50) {
             dropdownContent.innerHTML = results + `<div class="no-results">+${filtered.length - 50} resultados más...</div>`;
         } else {
             dropdownContent.innerHTML = results;
         }
-
+        
         // Event listeners para cada item
         document.querySelectorAll('.dropdown-item').forEach(item => {
             item.addEventListener('click', () => {
@@ -1415,7 +1435,7 @@ function initializeFilters() {
             });
         });
     }
-
+    
     // Seleccionar una comuna
     function selectComuna(comuna) {
         if (!selectedComunas.includes(comuna)) {
@@ -1427,14 +1447,14 @@ function initializeFilters() {
             searchInput.focus();
         }
     }
-
+    
     // Remover una comuna
     function removeComuna(comuna) {
         selectedComunas = selectedComunas.filter(c => c !== comuna);
         updateUI();
         updateFilterBadge();
     }
-
+    
     // Actualizar UI
     function updateUI() {
         // Tags de comunas seleccionadas
@@ -1445,7 +1465,7 @@ function initializeFilters() {
                     <button class="remove-comuna" data-comuna="${comuna}" title="Quitar ${comuna}">×</button>
                 </div>
             `).join('');
-
+            
             // Event listeners para remover
             document.querySelectorAll('.remove-comuna').forEach(btn => {
                 btn.addEventListener('click', () => {
@@ -1455,7 +1475,7 @@ function initializeFilters() {
         } else {
             selectedTagsContainer.innerHTML = '';
         }
-
+        
         // Summary
         if (selectedComunas.length > 0) {
             summaryDiv.classList.add('visible');
@@ -1464,7 +1484,7 @@ function initializeFilters() {
         } else {
             summaryDiv.classList.remove('visible');
         }
-
+        
         // Clear search button
         if (searchInput.value.length > 0) {
             clearSearchBtn.classList.add('visible');
@@ -1472,7 +1492,7 @@ function initializeFilters() {
             clearSearchBtn.classList.remove('visible');
         }
     }
-
+    
     // Actualizar badge con número de filtros
     function updateFilterBadge() {
         const badge = document.getElementById('filterBadge');
@@ -1485,7 +1505,7 @@ function initializeFilters() {
             }
         }
     }
-
+    
     // Event: Input en búsqueda
     searchInput.addEventListener('input', (e) => {
         const value = e.target.value;
@@ -1497,7 +1517,7 @@ function initializeFilters() {
         }
         updateUI();
     });
-
+    
     // Event: Focus en input
     searchInput.addEventListener('focus', () => {
         if (searchInput.value.length > 0) {
@@ -1505,14 +1525,14 @@ function initializeFilters() {
             dropdown.classList.add('visible');
         }
     });
-
+    
     // Event: Click fuera del dropdown
     document.addEventListener('click', (e) => {
         if (!e.target.closest('.search-container')) {
             dropdown.classList.remove('visible');
         }
     });
-
+    
     // Event: Limpiar búsqueda
     clearSearchBtn?.addEventListener('click', () => {
         searchInput.value = '';
@@ -1520,7 +1540,7 @@ function initializeFilters() {
         updateUI();
         searchInput.focus();
     });
-
+    
     // Event: Limpiar todos los filtros
     clearAllBtn?.addEventListener('click', () => {
         selectedComunas = [];
@@ -1528,12 +1548,12 @@ function initializeFilters() {
         updateFilterBadge();
         applyFiltersToComunas(); // Aplicar inmediatamente
     });
-
+    
     // Event: Aplicar filtros
     applyBtn?.addEventListener('click', () => {
         applyFiltersToComunas();
     });
-
+    
     // Tecla Enter para seleccionar primera opción
     searchInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
@@ -1551,22 +1571,8 @@ function initializeFilters() {
             searchInput.blur();
         }
     });
-
-    console.log('✅ Sistema de filtros inicializado correctamente');
-}
-
-// Inicializar cuando el mapa esté cargado
-if (typeof map !== 'undefined') {
-    map.on('load', () => {
-        initializeFilters();
-    });
-} else {
-    // Si el mapa aún no existe, esperar al DOMContentLoaded
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            initializeFilters();
-        }, 1000);
-    });
+    
+    console.log('✅ Sistema de filtros de comunas inicializado correctamente');
 }
 
 // Toggle panel de filtros
@@ -1574,7 +1580,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleBtn = document.getElementById('toggleFilterPanel');
     const closeBtn = document.getElementById('closeFilterPanel');
     const panel = document.getElementById('filter-comuna-panel');
-
+    
     toggleBtn?.addEventListener('click', () => {
         panel?.classList.add('open');
     });
@@ -1582,4 +1588,333 @@ document.addEventListener('DOMContentLoaded', () => {
     closeBtn?.addEventListener('click', () => {
         panel?.classList.remove('open');
     });
+
+    const toggleLayersBtn = document.getElementById('toggleLayersPanel');
+    const closeLayersBtn = document.getElementById('closeLayersPanel');
+    const layersPanel = document.getElementById('control-panel');
+    
+    toggleLayersBtn?.addEventListener('click', () => {
+        layersPanel?.classList.add('open');
+    });
+    
+    closeLayersBtn?.addEventListener('click', () => {
+        layersPanel?.classList.remove('open');
+    });
 });
+  
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function unescapeHtml(text) {
+    const div = document.createElement('div');
+    div.innerHTML = text;
+    return div.textContent;
+}
+ 
+// ==========================================
+// ⭐ SISTEMA DE FILTROS PARA SITIOS PRIORIZADOS
+// ==========================================
+
+function loadSitiosPriorizadosData() {
+    console.log('🔍 Cargando datos de Sitios Priorizados...');
+    
+    const checkLayer = setInterval(() => {
+        if (map.getLayer('sitios-priorizados') && map.isSourceLoaded('sitios-priorizados')) {
+            clearInterval(checkLayer);
+            
+            // IMPORTANTE: Hacer la capa visible temporalmente para poder consultar
+            const wasVisible = map.getLayoutProperty('sitios-priorizados', 'visibility') === 'visible';
+            if (!wasVisible) {
+                map.setLayoutProperty('sitios-priorizados', 'visibility', 'visible');
+            }
+            
+            // Esperar un momento para que se renderice
+            setTimeout(() => {
+                try {
+                    // Obtener todas las features renderizadas en el viewport actual
+                    const features = map.queryRenderedFeatures({
+                        layers: ['sitios-priorizados']
+                    });
+                    
+                    console.log(`📊 Encontradas ${features.length} features visibles de Sitios Priorizados`);
+                    
+                    if (features.length === 0) {
+                        console.warn('⚠️ No se encontraron features. Asegúrate de que la capa esté activa y visible en el mapa.');
+                        // Restaurar visibilidad
+                        if (!wasVisible) {
+                            map.setLayoutProperty('sitios-priorizados', 'visibility', 'none');
+                        }
+                        return;
+                    }
+                    
+                    const sets = {
+                        nombres: new Set(),
+                        empresas: new Set(),
+                        actividades: new Set(),
+                        procesos: new Set(),
+                        contaminantes: new Set()
+                    };
+                    
+                    features.forEach(feature => {
+                        const props = feature.properties;
+                        
+                        if (props['nombre sppc']) sets.nombres.add(props['nombre sppc']);
+                        if (props['nombre empresa o titular']) sets.empresas.add(props['nombre empresa o titular']);
+                        if (props['act potencial contaminante i']) sets.actividades.add(props['act potencial contaminante i']);
+                        if (props['id proc indust pot contaminantes i']) sets.procesos.add(props['id proc indust pot contaminantes i']);
+                        if (props['potenciales contaminantes i']) sets.contaminantes.add(props['potenciales contaminantes i']);
+                    });
+                    
+                    sitiosPriorizadosData = {
+                        nombres: Array.from(sets.nombres).sort(),
+                        empresas: Array.from(sets.empresas).sort(),
+                        actividades: Array.from(sets.actividades).sort(),
+                        procesos: Array.from(sets.procesos).sort(),
+                        contaminantes: Array.from(sets.contaminantes).sort()
+                    };
+                    
+                    console.log('✅ Datos de Sitios Priorizados cargados:', {
+                        nombres: sitiosPriorizadosData.nombres.length,
+                        empresas: sitiosPriorizadosData.empresas.length,
+                        actividades: sitiosPriorizadosData.actividades.length,
+                        procesos: sitiosPriorizadosData.procesos.length,
+                        contaminantes: sitiosPriorizadosData.contaminantes.length
+                    });
+                    
+                    // Restaurar visibilidad original
+                    if (!wasVisible) {
+                        map.setLayoutProperty('sitios-priorizados', 'visibility', 'none');
+                    }
+                    
+                    setupSitiosPriorizadosFilter();
+                    
+                } catch (error) {
+                    console.error('❌ Error cargando datos de Sitios Priorizados:', error);
+                    // Restaurar visibilidad en caso de error
+                    if (!wasVisible) {
+                        map.setLayoutProperty('sitios-priorizados', 'visibility', 'none');
+                    }
+                }
+            }, 1000);
+        }
+    }, 500);
+    
+    setTimeout(() => clearInterval(checkLayer), 15000);
+}
+
+function setupSitiosPriorizadosFilter() {
+    const filterTypes = ['nombre', 'empresa', 'actividad', 'proceso', 'contaminante'];
+    
+    filterTypes.forEach(type => {
+        const searchInput = document.getElementById(`sitios-${type}-search`);
+        const dropdown = document.getElementById(`sitios-${type}-dropdown`);
+        const dropdownContent = document.getElementById(`sitios-${type}-content`);
+        
+        if (!searchInput || !dropdown || !dropdownContent) {
+            console.warn(`⚠️ Elementos no encontrados para ${type}`);
+            return;
+        }
+        
+        // Función para renderizar dropdown
+        function renderDropdown(filter = '') {
+            const dataKey = type === 'nombre' ? 'nombres' : 
+                           type === 'empresa' ? 'empresas' :
+                           type === 'actividad' ? 'actividades' :
+                           type === 'proceso' ? 'procesos' : 'contaminantes';
+            
+            const data = sitiosPriorizadosData[dataKey] || [];
+            const filtered = data.filter(item => 
+                item.toLowerCase().includes(filter.toLowerCase()) &&
+                !sitiosPriorizadosFilter[type].includes(item)
+            );
+            
+            if (filtered.length === 0) {
+                dropdownContent.innerHTML = '<div class="no-results">No se encontraron resultados</div>';
+                return;
+            }
+            
+            const results = filtered.slice(0, 50).map(item => 
+                `<div class="dropdown-item" data-value="${escapeHtml(item)}">${item}</div>`
+            ).join('');
+            
+            if (filtered.length > 50) {
+                dropdownContent.innerHTML = results + `<div class="no-results">+${filtered.length - 50} resultados más...</div>`;
+            } else {
+                dropdownContent.innerHTML = results;
+            }
+            
+            // Event listeners para items
+            document.querySelectorAll(`#sitios-${type}-content .dropdown-item`).forEach(item => {
+                item.addEventListener('click', () => {
+                    selectSitiosItem(type, unescapeHtml(item.dataset.value));
+                });
+            });
+        }
+        
+        // Input event
+        searchInput.addEventListener('input', (e) => {
+            const value = e.target.value;
+            if (value.length > 0) {
+                renderDropdown(value);
+                dropdown.classList.add('visible');
+            } else {
+                dropdown.classList.remove('visible');
+            }
+        });
+        
+        // Focus event
+        searchInput.addEventListener('focus', () => {
+            if (searchInput.value.length > 0) {
+                renderDropdown(searchInput.value);
+                dropdown.classList.add('visible');
+            }
+        });
+        
+        // Enter key
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                if (dropdown.classList.contains('visible')) {
+                    const firstItem = dropdown.querySelector('.dropdown-item');
+                    if (firstItem) {
+                        selectSitiosItem(type, unescapeHtml(firstItem.dataset.value));
+                    }
+                }
+            }
+            if (e.key === 'Escape') {
+                dropdown.classList.remove('visible');
+                searchInput.blur();
+            }
+        });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!e.target.closest('.search-container')) {
+            document.querySelectorAll('.sitios-filter .dropdown').forEach(d => {
+                d.classList.remove('visible');
+            });
+        }
+    });
+    
+    console.log('✅ Filtro de Sitios Priorizados configurado');
+}
+
+function selectSitiosItem(type, value) {
+    if (!sitiosPriorizadosFilter[type].includes(value)) {
+        sitiosPriorizadosFilter[type].push(value);
+        updateSelectedSitiosFilters();
+        applySitiosPriorizadosFilters();
+        
+        // Limpiar input y cerrar dropdown
+        const searchInput = document.getElementById(`sitios-${type}-search`);
+        const dropdown = document.getElementById(`sitios-${type}-dropdown`);
+        if (searchInput) searchInput.value = '';
+        if (dropdown) dropdown.classList.remove('visible');
+    }
+}
+
+function clearSitiosSearch(type) {
+    const searchInput = document.getElementById(`sitios-${type}-search`);
+    const dropdown = document.getElementById(`sitios-${type}-dropdown`);
+    if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+    }
+    if (dropdown) dropdown.classList.remove('visible');
+}
+
+function updateSelectedSitiosFilters() {
+    const labels = {
+        nombre: 'Nombre',
+        empresa: 'Empresa',
+        actividad: 'Actividad',
+        proceso: 'Proceso',
+        contaminante: 'Contaminante'
+    };
+    
+    const container = document.getElementById('selected-sitios-filters');
+    if (!container) return;
+    
+    container.innerHTML = '';
+    
+    Object.keys(sitiosPriorizadosFilter).forEach(type => {
+        sitiosPriorizadosFilter[type].forEach(value => {
+            const tag = document.createElement('span');
+            tag.className = 'filter-tag';
+            tag.innerHTML = `
+                <small>${labels[type]}:</small> ${escapeHtml(value)}
+                <button onclick="removeSitiosFilter('${type}', '${escapeHtml(value)}')">×</button>
+            `;
+            container.appendChild(tag);
+        });
+    });
+}
+
+function removeSitiosFilter(type, value) {
+    const decodedValue = unescapeHtml(value);
+    sitiosPriorizadosFilter[type] = sitiosPriorizadosFilter[type].filter(v => v !== decodedValue);
+    updateSelectedSitiosFilters();
+    applySitiosPriorizadosFilters();
+}
+
+function applySitiosPriorizadosFilters() {
+    if (!map || !map.getLayer('sitios-priorizados')) {
+        console.warn('⚠️ Capa sitios-priorizados no disponible');
+        return;
+    }
+    
+    const hasFilters = Object.values(sitiosPriorizadosFilter).some(arr => arr.length > 0);
+    
+    if (!hasFilters) {
+        const currentFilter = map.getFilter('sitios-priorizados');
+        if (currentFilter && Array.isArray(currentFilter) && currentFilter[0] === 'in') {
+            console.log('✅ Filtros de Sitios Priorizados removidos, manteniendo filtro de comuna');
+            return;
+        }
+        map.setFilter('sitios-priorizados', null);
+        console.log('✅ Filtros de Sitios Priorizados removidos');
+        return;
+    }
+    
+    const filters = [];
+    
+    if (sitiosPriorizadosFilter.nombre.length > 0) {
+        const conditions = sitiosPriorizadosFilter.nombre.map(v => ['==', ['get', 'nombre sppc'], v]);
+        filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
+    }
+    
+    if (sitiosPriorizadosFilter.empresa.length > 0) {
+        const conditions = sitiosPriorizadosFilter.empresa.map(v => ['==', ['get', 'nombre empresa o titular'], v]);
+        filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
+    }
+    
+    if (sitiosPriorizadosFilter.actividad.length > 0) {
+        const conditions = sitiosPriorizadosFilter.actividad.map(v => ['==', ['get', 'act potencial contaminante i'], v]);
+        filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
+    }
+    
+    if (sitiosPriorizadosFilter.proceso.length > 0) {
+        const conditions = sitiosPriorizadosFilter.proceso.map(v => ['==', ['get', 'id proc indust pot contaminantes i'], v]);
+        filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
+    }
+    
+    if (sitiosPriorizadosFilter.contaminante.length > 0) {
+        const conditions = sitiosPriorizadosFilter.contaminante.map(v => ['==', ['get', 'potenciales contaminantes i'], v]);
+        filters.push(conditions.length === 1 ? conditions[0] : ['any', ...conditions]);
+    }
+    
+    const currentFilter = map.getFilter('sitios-priorizados');
+    const comunaFilter = currentFilter && Array.isArray(currentFilter) && currentFilter[0] === 'in' ? currentFilter : null;
+    
+    const allFilters = comunaFilter 
+        ? ['all', comunaFilter, ...filters] 
+        : filters.length > 1 ? ['all', ...filters] : filters[0];
+    
+    map.setFilter('sitios-priorizados', allFilters);
+    
+    console.log('✅ Filtros aplicados a Sitios Priorizados:', sitiosPriorizadosFilter);
+}
