@@ -2058,13 +2058,27 @@ function showSummaryPopup(comunaNombre, summaryData) {
 function onComunaFilterApplied(comunaNombre) {
   console.log('Filtro de comuna aplicado: ' + comunaNombre);
   
-  // Esperar a que el mapa termine de renderizar
-  map.once('render', function() {
-    // Y luego esperar un poquito más
-    setTimeout(function() {
-      console.log('Iniciando conteo...');
-      var summaryData = countFeaturesInComuna(comunaNombre);
-      showSummaryPopup(comunaNombre, summaryData);
-    }, 1000);
-  });
+  // Esperar múltiples renders para asegurar que TODO esté cargado
+  var renderCount = 0;
+  var maxRenders = 3;
+  
+  function waitForRender() {
+    map.once('render', function() {
+      renderCount++;
+      console.log('Render ' + renderCount + ' de ' + maxRenders);
+      
+      if (renderCount < maxRenders) {
+        waitForRender();
+      } else {
+        // Ya se renderizó 3 veces, ahora sí contar
+        setTimeout(function() {
+          console.log('Iniciando conteo...');
+          var summaryData = countFeaturesInComuna(comunaNombre);
+          showSummaryPopup(comunaNombre, summaryData);
+        }, 500);
+      }
+    });
+  }
+  
+  waitForRender();
 }
