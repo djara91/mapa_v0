@@ -754,6 +754,51 @@ Object.keys(categories).forEach(categoryName => {
   panelContent.appendChild(categoryDiv);
 });
 
+// ==========================================
+// CHECKBOX "SELECCIONAR TODAS LAS CAPAS"
+// ==========================================
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(function() {
+    const selectAllCheckbox = document.getElementById('selectAllLayers');
+    
+    if (selectAllCheckbox) {
+      selectAllCheckbox.addEventListener('change', function() {
+        const isChecked = this.checked;
+        
+        console.log(isChecked ? '✅ Activando todas las capas' : '❌ Desactivando todas las capas');
+        
+        // Cambiar visibilidad de TODAS las capas en el mapa
+        config.layers.forEach(function(layer) {
+          if (map.getLayer(layer.id)) {
+            const visibility = isChecked ? 'visible' : 'none';
+            map.setLayoutProperty(layer.id, 'visibility', visibility);
+          }
+        });
+        
+        // Actualizar todos los checkboxes individuales de capas
+        const allLayerCheckboxes = document.querySelectorAll('.layer-checkbox:not(.select-all-checkbox)');
+        allLayerCheckboxes.forEach(function(checkbox) {
+          checkbox.checked = isChecked;
+          const layerItem = checkbox.closest('.layer-item');
+          if (layerItem) {
+            layerItem.classList.toggle('active', isChecked);
+          }
+        });
+        
+        // Actualizar checkboxes de "Seleccionar todos" por categoría
+        const categorySelectAllCheckboxes = document.querySelectorAll('.select-all-checkbox');
+        categorySelectAllCheckboxes.forEach(function(checkbox) {
+          checkbox.checked = isChecked;
+          const selectAllItem = checkbox.closest('.select-all-item');
+          if (selectAllItem) {
+            selectAllItem.classList.toggle('active', isChecked);
+          }
+        });
+      });
+    }
+  }, 1000);
+});
+
 // ============================================
 // SELECTOR DE ESTILOS DE MAPA
 // ============================================
