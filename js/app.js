@@ -2019,12 +2019,13 @@ function showSummaryPopup(comunaNombre, summaryData) {
     return;
   }
 
-  var html = '<div style="padding: 15px; min-width: 280px; max-height: 450px; overflow-y: auto; font-family: system-ui, -apple-system, sans-serif;">';
-  html += '<h3 style="margin: 0 0 15px 0; color: #ffffff; font-size: 18px; font-weight: 600; padding-bottom: 10px; position: sticky; top: 0; background: transparent; z-index: 1;">📍 ' + comunaNombre + '</h3>';
+  var html = '<div style="padding: 15px; min-width: 280px; max-width: 380px; max-height: 450px; overflow-y: auto; font-family: system-ui, -apple-system, sans-serif;">';
+  html += '<h3 style="margin: 0 0 15px 0; color: #ffffff; font-size: 18px; font-weight: 600; padding-bottom: 10px; position: sticky; top: 0; background: #27272a; z-index: 1;">📍 ' + comunaNombre + '</h3>';
   html += '<div style="background: #f3f4f6; padding: 12px; border-radius: 6px; margin-bottom: 15px;">';
-  html += '<div style="font-size: 14px; color: #9399a5;">Total de elementos:</div>';
+  html += '<div style="font-size: 14px; color: #6b7280;">Total de elementos:</div>';
   html += '<div style="font-size: 32px; font-weight: bold; color: #3b82f6; line-height: 1;">' + total + '</div>';
-  html += '</div><div style="font-size: 14px;">';
+  html += '</div>';
+  html += '<div style="font-size: 14px;">';
 
   var sortedEntries = [];
   for (var cat in counts) {
@@ -2035,10 +2036,11 @@ function showSummaryPopup(comunaNombre, summaryData) {
   for (var i = 0; i < sortedEntries.length; i++) {
     var category = sortedEntries[i][0];
     var count = sortedEntries[i][1];
-        
+    
     html += '<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e5e7eb;">';
-    html += '<div style="flex: 1;"><div style="color: #374151; font-weight: 500;">' + category + '</div>';
-    html += '<div style="background: #3b82f6; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 600; font-size: 14px;">' + count + '</div></div>';
+    html += '<div style="flex: 1;"><div style="color: #374151; font-weight: 500;">' + category + '</div></div>';
+    html += '<div style="background: #3b82f6; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 600; font-size: 14px;">' + count + '</div>';
+    html += '</div>';
   }
 
   html += '</div></div>';
@@ -2046,7 +2048,7 @@ function showSummaryPopup(comunaNombre, summaryData) {
   new mapboxgl.Popup({
     closeButton: true,
     closeOnClick: false,
-    maxWidth: '380px',
+    maxWidth: '420px',
     offset: [0, 100]
   })
     .setLngLat(map.getCenter())
