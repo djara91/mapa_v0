@@ -1,3 +1,4 @@
+   // Version 2.0 - 2025-01-15
 // Configuración embebida
 const config = {
   mapboxToken: 'pk.eyJ1IjoiZGphcmF2OTEiLCJhIjoiY21nMHRrOTFyMDc4eDJrb2s4MXFteHB4MiJ9.Ohh3xFjsIeEKhGbQRXs4jA',
