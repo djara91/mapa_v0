@@ -1931,6 +1931,7 @@ function countFeaturesInComuna(comunaNombre) {
   
   var tilesetCategories = {
     'Sitios Priorizados': ['sitios-priorizados'],
+    'Predios': ['predios-araucania', 'predios-antofagasta', 'predios-magallanes'],
     'Minas Abandonadas': ['minas-abandonadas'],
     'Yacimientos Mineros': ['yacimientos-mineros'],
     'Relaves': ['catastro-relaves', 'geoquimica-relaves', 'socioterritorial-relaves'],
@@ -2059,9 +2060,32 @@ function showSummaryPopup(comunaNombre, summaryData) {
 function onComunaFilterApplied(comunaNombre) {
   console.log('Filtro de comuna aplicado: ' + comunaNombre);
   
-  setTimeout(function() {
-    console.log('Iniciando conteo...');
-    var summaryData = countFeaturesInComuna(comunaNombre);
-    showSummaryPopup(comunaNombre, summaryData);
-  }, 800);
-}   
+  // Guardar estado actual de visibilidad de capas
+  var originalVisibility = {};
+  config.layers.forEach(function(layer) {
+    originalVisibility[layer.id] = map.getLayoutProperty(layer.id, 'visibility');
+  });
+  
+  // Hacer TODAS las capas visibles temporalmente
+  config.layers.forEach(function(layer) {
+    map.setLayoutProperty(layer.id, 'visibility', 'visible');
+  });
+  
+  // Esperar a que el mapa cargue todos los tiles
+  map.once('idle', function() {
+    console.log('Mapa idle, iniciando conteo...');
+    
+    // Pequeña espera adicional para asegurar que todo está renderizado
+    setTimeout(function() {
+      console.log('Iniciando conteo...');
+      var summaryData = countFeaturesInComuna(comunaNombre);
+      
+      // Restaurar visibilidad original
+      for (var layerId in originalVisibility) {
+        map.setLayoutProperty(layerId, originalVisibility[layerId]);
+      }
+      
+      showSummaryPopup(comunaNombre, summaryData);
+    }, 500);
+  });
+}  
