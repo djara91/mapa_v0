@@ -2063,5 +2063,4 @@ function onComunaFilterApplied(comunaNombre) {
     var summaryData = countFeaturesInComuna(comunaNombre);
     showSummaryPopup(comunaNombre, summaryData);
   }, 800);
-}
-        
+}   
