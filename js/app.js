@@ -2035,11 +2035,9 @@ function showSummaryPopup(comunaNombre, summaryData) {
   for (var i = 0; i < sortedEntries.length; i++) {
     var category = sortedEntries[i][0];
     var count = sortedEntries[i][1];
-    var percentage = ((count / total) * 100).toFixed(1);
-    
+        
     html += '<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e5e7eb;">';
     html += '<div style="flex: 1;"><div style="color: #374151; font-weight: 500;">' + category + '</div>';
-    html += '<div style="color: #9ca3af; font-size: 12px;">' + percentage + '%</div></div>';
     html += '<div style="background: #3b82f6; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 600; font-size: 14px;">' + count + '</div></div>';
   }
 
