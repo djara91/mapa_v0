@@ -1931,14 +1931,14 @@ function countFeaturesInComuna(comunaNombre) {
   
   var tilesetCategories = {
     'Sitios Priorizados': ['sitios-priorizados'],
-    'Predios': ['predios-araucania', 'predios-antofagasta', 'predios-magallanes'],
     'Minas Abandonadas': ['minas-abandonadas'],
     'Yacimientos Mineros': ['yacimientos-mineros'],
     'Relaves': ['catastro-relaves', 'geoquimica-relaves', 'socioterritorial-relaves'],
     'Infraestructura': ['red-aeroportuaria', 'puentes', 'ciclovias', 'estaciones-servicio'],
     'Residuos/vertederos': ['rsd-activos', 'rsd-cerrados', 'rsd-intermedios', 'rsd-planificados', 'vertederos-ilegales'],
     'Educacion': ['educacion-parvularia', 'educacion-escolar', 'educacion-superior'],
-    'Salud': ['establecimientos-salud']
+    'Salud': ['establecimientos-salud'],
+    'Predios': ['predios-araucania', 'predios-antofagasta', 'predios-magallanes']
   };
 
   var counts = {};
@@ -1966,14 +1966,12 @@ function countFeaturesInComuna(comunaNombre) {
           continue;
         }
 
-        var comunaColumn = getComunaColumnForLayer(layerConfig);
-        console.log('Consultando ' + layerConfig.name + ' (columna: ' + comunaColumn + ')');
-
-        var features = map.querySourceFeatures(layerConfig.tilesetId, {
-          sourceLayer: layerConfig.sourceLayer
+        // Consultar TODAS las features visibles en pantalla de esta capa
+        var features = map.queryRenderedFeatures({
+          layers: [layerId]
         });
 
-        console.log('  Encontrados ' + features.length + ' features en total');
+        var comunaColumn = getComunaColumnForLayer(layerConfig);
 
         for (var k = 0; k < features.length; k++) {
           var feature = features[k];
@@ -2005,87 +2003,17 @@ function countFeaturesInComuna(comunaNombre) {
   return { counts: counts, total: totalCount };
 }
 
-function showSummaryPopup(comunaNombre, summaryData) {
-  var counts = summaryData.counts;
-  var total = summaryData.total;
-
-  if (total === 0) {
-    new mapboxgl.Popup({
-      closeButton: true,
-      closeOnClick: true,
-      maxWidth: '300px'
-    })
-      .setLngLat(map.getCenter())
-      .setHTML('<div style="padding: 15px; text-align: center;"><h3 style="margin: 0 0 10px 0; color: #6b7280; font-size: 16px;">No se encontraron elementos en ' + comunaNombre + '</h3></div>')
-      .addTo(map);
-    return;
-  }
-
-  var html = '<div style="padding: 15px; min-width: 280px; font-family: system-ui, -apple-system, sans-serif;">';
-  html += '<h3 style="margin: 0 0 15px 0; color: #111827; font-size: 18px; font-weight: 600; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">En ' + comunaNombre + '</h3>';
-  html += '<div style="background: #f3f4f6; padding: 12px; border-radius: 6px; margin-bottom: 15px;">';
-  html += '<div style="font-size: 14px; color: #6b7280;">Total de elementos:</div>';
-  html += '<div style="font-size: 32px; font-weight: bold; color: #3b82f6; line-height: 1;">' + total + '</div>';
-  html += '</div><div style="font-size: 14px;">';
-
-  var sortedEntries = [];
-  for (var cat in counts) {
-    sortedEntries.push([cat, counts[cat]]);
-  }
-  sortedEntries.sort(function(a, b) { return b[1] - a[1]; });
-
-  for (var i = 0; i < sortedEntries.length; i++) {
-    var category = sortedEntries[i][0];
-    var count = sortedEntries[i][1];
-    var percentage = ((count / total) * 100).toFixed(1);
-    
-    html += '<div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e5e7eb;">';
-    html += '<div style="flex: 1;"><div style="color: #374151; font-weight: 500;">' + category + '</div>';
-    html += '<div style="color: #9ca3af; font-size: 12px;">' + percentage + '%</div></div>';
-    html += '<div style="background: #3b82f6; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 600; font-size: 14px;">' + count + '</div></div>';
-  }
-
-  html += '</div></div>';
-
-  new mapboxgl.Popup({
-    closeButton: true,
-    closeOnClick: false,
-    maxWidth: '380px'
-  })
-    .setLngLat(map.getCenter())
-    .setHTML(html)
-    .addTo(map);
-}
-
 function onComunaFilterApplied(comunaNombre) {
   console.log('Filtro de comuna aplicado: ' + comunaNombre);
   
-  // Guardar estado actual de visibilidad de capas
-  var originalVisibility = {};
-  config.layers.forEach(function(layer) {
-    originalVisibility[layer.id] = map.getLayoutProperty(layer.id, 'visibility');
-  });
-  
-  // Hacer TODAS las capas visibles temporalmente
-  config.layers.forEach(function(layer) {
-    map.setLayoutProperty(layer.id, 'visibility', 'visible');
-  });
-  
-  // Esperar a que el mapa cargue todos los tiles
+  // esperar a que el mapa esté idle (sin cambiar visibilidad)
   map.once('idle', function() {
     console.log('Mapa idle, iniciando conteo...');
     
-    // Pequeña espera adicional para asegurar que todo está renderizado
     setTimeout(function() {
       console.log('Iniciando conteo...');
       var summaryData = countFeaturesInComuna(comunaNombre);
-      
-      // Restaurar visibilidad original
-      for (var layerId in originalVisibility) {
-        map.setLayoutProperty(layerId, originalVisibility[layerId]);
-      }
-      
       showSummaryPopup(comunaNombre, summaryData);
-    }, 500);
+    }, 300);
   });
-}  
+}
