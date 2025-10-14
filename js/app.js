@@ -2019,8 +2019,8 @@ function showSummaryPopup(comunaNombre, summaryData) {
     return;
   }
 
-  var html = '<div style="padding: 15px; min-width: 280px; font-family: system-ui, -apple-system, sans-serif;">';
-  html += '<h3 style="margin: 0 0 15px 0; color: #ffffff; font-size: 18px; font-weight: 600; border-bottom: 2px solid #3b82f6; padding-bottom: 10px;">En ' + comunaNombre + '</h3>';
+  var html = '<div style="padding: 15px; min-width: 280px; max-height: 450px; overflow-y: auto; font-family: system-ui, -apple-system, sans-serif;">';
+  html += '<h3 style="margin: 0 0 15px 0; color: #ffffff; font-size: 18px; font-weight: 600; border-bottom: 2px solid #3b82f6; padding-bottom: 10px; position: sticky; top: 0; background: #1e293b; z-index: 1;">📍 ' + comunaNombre + '</h3>';
   html += '<div style="background: #f3f4f6; padding: 12px; border-radius: 6px; margin-bottom: 15px;">';
   html += '<div style="font-size: 14px; color: #6b7280;">Total de elementos:</div>';
   html += '<div style="font-size: 32px; font-weight: bold; color: #3b82f6; line-height: 1;">' + total + '</div>';
