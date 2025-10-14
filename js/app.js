@@ -2006,14 +2006,13 @@ function countFeaturesInComuna(comunaNombre) {
 function onComunaFilterApplied(comunaNombre) {
   console.log('Filtro de comuna aplicado: ' + comunaNombre);
   
-  // esperar a que el mapa esté idle (sin cambiar visibilidad)
-  map.once('idle', function() {
-    console.log('Mapa idle, iniciando conteo...');
-    
+  // Esperar a que el mapa termine de renderizar
+  map.once('render', function() {
+    // Y luego esperar un poquito más
     setTimeout(function() {
       console.log('Iniciando conteo...');
       var summaryData = countFeaturesInComuna(comunaNombre);
       showSummaryPopup(comunaNombre, summaryData);
-    }, 300);
+    }, 1000);
   });
 }
