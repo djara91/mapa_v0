@@ -2292,7 +2292,7 @@ function showSummaryPopup(comunaNombre, summaryData) {
     return;
   }
 
-  var html = '<div style="padding: 15px 35px 15px 15px; min-width: 280px; max-width: 380px; max-height: 450px; overflow-y: auto; font-family: system-ui, -apple-system, sans-serif;">';
+  var html = '<div style="padding: 15px; padding-right: 45px; min-width: 280px; max-width: 380px; max-height: 450px; overflow-y: auto; font-family: system-ui, -apple-system, sans-serif;">';
   html += '<h3 style="margin: 0 0 15px 0; color: #ffffff; font-size: 18px; font-weight: 600; padding-bottom: 5px; position: sticky; top: 0; background: transparent; z-index: 1;">📍 ' + comunaNombre + '</h3>';
   html += '<div style="font-size: 14px;">';
 
