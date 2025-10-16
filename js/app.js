@@ -1261,9 +1261,20 @@ map.on('load', () => {
     if (visibleLayers.length === 0) return;
     
     // Buscar features en todas las capas visibles
-    const features = map.queryRenderedFeatures(e.point, {
+    let features = map.queryRenderedFeatures(e.point, {
       layers: visibleLayers
     });
+
+    // Si no encuentra nada, buscar con mayor radio (área ampliada)
+    if (features.length === 0) {
+      const bbox = [
+        [e.point.x - 15, e.point.y - 15],  // Esquina superior izquierda
+        [e.point.x + 15, e.point.y + 15]   // Esquina inferior derecha
+      ];
+      features = map.queryRenderedFeatures(bbox, {
+        layers: visibleLayers
+      });
+    }
     
     if (features.length > 0) {
       createMultiPopup(features, e.lngLat);
