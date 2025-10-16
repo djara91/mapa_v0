@@ -1632,6 +1632,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     toggleBtn?.addEventListener('click', () => {
         panel?.classList.add('open');
+        traerPanelAlFrente(panel);
     });
 
     closeBtn?.addEventListener('click', () => {
@@ -1644,10 +1645,17 @@ document.addEventListener('DOMContentLoaded', () => {
     
     toggleLayersBtn?.addEventListener('click', () => {
         layersPanel?.classList.add('open');
+        layersPanel.style.display = 'block';
+        traerPanelAlFrente(layersPanel);
     });
     
     closeLayersBtn?.addEventListener('click', () => {
         layersPanel?.classList.remove('open');
+        layersPanel.style.display = 'none';
+    });
+
+    layersPanel?.addEventListener('mousedown', () => {
+        traerPanelAlFrente(panel);
     });
 });
   
@@ -2124,3 +2132,96 @@ function onComunaFilterApplied(comunaNombre) {
   
   waitForRender();
 }
+// ==========================================
+// SISTEMA DE Z-INDEX DINÁMICO PARA PANELES (capas-filtros)
+// ==========================================
+
+// Función para traer un panel al frente
+function traerPanelAlFrente(panel) {
+    // Remover clase 'panel-front' de todos los paneles
+    document.querySelectorAll('.control-panel, .filter-panel-comuna').forEach(p => {
+        p.classList.remove('panel-front');
+    });
+    
+    // Agregar clase al panel actual
+    if (panel) {
+        panel.classList.add('panel-front');
+        console.log('✅ Panel traído al frente:', panel.id);
+    }
+}
+
+// Configurar eventos de los paneles
+(function initPanelZIndex() {
+    // Esperar a que el DOM esté completamente cargado
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupPanelEvents);
+    } else {
+        setupPanelEvents();
+    }
+    
+    function setupPanelEvents() {
+        const toggleLayersBtn = document.getElementById('toggleLayersPanel');
+        const closeLayersBtn = document.getElementById('closeLayersPanel');
+        const layersPanel = document.getElementById('control-panel');
+        
+        const toggleFilterBtn = document.getElementById('toggleFilterPanel');
+        const closeFilterBtn = document.getElementById('closeFilterPanel');
+        const filterPanel = document.getElementById('filter-comuna-panel');
+        
+        console.log('🔧 Configurando eventos de paneles...');
+        
+        // Evento para abrir panel de CAPAS
+        if (toggleLayersBtn && layersPanel) {
+            toggleLayersBtn.addEventListener('click', () => {
+                console.log('📂 Abriendo panel de capas');
+                layersPanel.style.display = 'block';
+                traerPanelAlFrente(layersPanel);
+            });
+        } else {
+            console.warn('⚠️ No se encontró botón o panel de capas');
+        }
+        
+        // Evento para cerrar panel de CAPAS
+        if (closeLayersBtn && layersPanel) {
+            closeLayersBtn.addEventListener('click', () => {
+                console.log('❌ Cerrando panel de capas');
+                layersPanel.style.display = 'none';
+            });
+        }
+        
+        // Evento para abrir panel de FILTROS
+        if (toggleFilterBtn && filterPanel) {
+            toggleFilterBtn.addEventListener('click', () => {
+                console.log('🔍 Abriendo panel de filtros');
+                filterPanel.classList.add('open');
+                traerPanelAlFrente(filterPanel);
+            });
+        } else {
+            console.warn('⚠️ No se encontró botón o panel de filtros');
+        }
+        
+        // Evento para cerrar panel de FILTROS
+        if (closeFilterBtn && filterPanel) {
+            closeFilterBtn.addEventListener('click', () => {
+                console.log('❌ Cerrando panel de filtros');
+                filterPanel.classList.remove('open');
+            });
+        }
+        
+        // Traer al frente cuando se hace clic dentro del panel de CAPAS
+        if (layersPanel) {
+            layersPanel.addEventListener('mousedown', () => {
+                traerPanelAlFrente(layersPanel);
+            });
+        }
+        
+        // Traer al frente cuando se hace clic dentro del panel de FILTROS
+        if (filterPanel) {
+            filterPanel.addEventListener('mousedown', () => {
+                traerPanelAlFrente(filterPanel);
+            });
+        }
+        
+        console.log('✅ Sistema de z-index dinámico inicializado correctamente');
+    }
+})();
