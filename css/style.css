@@ -1198,7 +1198,7 @@ body {
 .mapboxgl-popup-close-button {
   right: 8px !important;
   z-index: 10 !important;
-  background: rgba(31, 41, 55, 0.9) !important;
+  background: transparent !important;
   border-radius: 4px !important;
   width: 28px !important;
   height: 28px !important;
