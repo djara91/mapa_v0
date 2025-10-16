@@ -2183,7 +2183,9 @@ function countFeaturesInComuna(comunaNombre) {
     'Residuos/vertederos': ['rsd-activos', 'rsd-cerrados', 'rsd-intermedios', 'rsd-planificados', 'vertederos-ilegales'],
     'Educacion': ['educacion-parvularia', 'educacion-escolar', 'educacion-superior'],
     'Salud': ['establecimientos-salud'],
-    'Predios': ['predios-araucania', 'predios-antofagasta', 'predios-magallanes']
+    'Predios': [
+       'predios-araucania', 'predios-antofagasta', 'predios-magallanes', 'predios-arica', 'predios-tarapaca', 'predios-atacama', 'predios-coquimbo', 'predios-valparaiso', 'predios-ohiggins', 'predios-maule',
+       'predios-nuble', 'predios-biobio', 'predios-los-rios', 'predios-los-lagos', 'predios-aysen']
   };
 
   var counts = {};
