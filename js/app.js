@@ -42,6 +42,7 @@ const config = {
       tilesetId: 'djarav91.2jqvxnk7',
       sourceLayer: 'predios_arica-7u8ir9',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -58,6 +59,7 @@ const config = {
       tilesetId: 'djarav91.c2g0w0v9',
       sourceLayer: 'predios_tarapaca-dn4das',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -74,6 +76,7 @@ const config = {
       tilesetId: 'djarav91.c1r3ealb',
       sourceLayer: 'predios_antofagasta-as3bzw',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -90,6 +93,7 @@ const config = {
       tilesetId: 'djarav91.83dl4vst',
       sourceLayer: 'predios_atacama-9bwefw',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -106,6 +110,7 @@ const config = {
       tilesetId: 'djarav91.djg47f0v',
       sourceLayer: 'predios_coquimbo-0sx319',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -122,6 +127,7 @@ const config = {
       tilesetId: 'djarav91.cgg249f4',
       sourceLayer: 'predios_valparaiso-75fclz',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -138,6 +144,7 @@ const config = {
       tilesetId: 'djarav91.6k64zmxc',
       sourceLayer: 'predios_ohiggins-5dsceq',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -154,6 +161,7 @@ const config = {
       tilesetId: 'djarav91.bg8n6d2v',
       sourceLayer: 'predios_maule-7y9m3k',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -170,6 +178,7 @@ const config = {
       tilesetId: 'djarav91.80mios6c',
       sourceLayer: 'predios_nuble-7rhpey',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -186,6 +195,7 @@ const config = {
       tilesetId: 'djarav91.5xfklnuq',
       sourceLayer: 'predios_biobio-53epuq',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -202,6 +212,7 @@ const config = {
       tilesetId: 'djarav91.3j46o3kh',
       sourceLayer: 'predios_araucania-d3cw1d',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -218,6 +229,7 @@ const config = {
       tilesetId: 'djarav91.3aa5cwqp',
       sourceLayer: 'predios_los_rios-7ywitm',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -234,6 +246,7 @@ const config = {
       tilesetId: 'djarav91.2kjrqd8x',
       sourceLayer: 'predios_los_lagos-aj2vy7',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -250,6 +263,7 @@ const config = {
       tilesetId: 'djarav91.35awsw0o',
       sourceLayer: 'predios_aysen-5j3nne',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
@@ -266,6 +280,7 @@ const config = {
       tilesetId: 'djarav91.dw89gmxz',
       sourceLayer: 'predios_magallanes-5ydzq2',
       type: 'fill',
+      minzoom: 7,
       paint: {
         'fill-color': '#a78bfa',
         'fill-opacity': 0.5
