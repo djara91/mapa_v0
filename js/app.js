@@ -36,14 +36,30 @@ const config = {
     },
     // PREDIOS - Tonos morados
     {
-      id: 'predios-araucania',
-      name: 'Predios Araucanía',
+      id: 'predios-arica',
+      name: 'Predios Arica y Parinacota',
       category: 'Predios',
-      tilesetId: 'djarav91.3j46o3kh',
-      sourceLayer: 'predios_araucania-d3cw1d',
+      tilesetId: 'djarav91.2jqvxnk7',
+      sourceLayer: 'predios_arica-7u8ir9',
       type: 'fill',
       paint: {
-        'fill-color': '#8b5cf6',
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-tarapaca',
+      name: 'Predios Tarapacá',
+      category: 'Predios',
+      tilesetId: 'djarav91.c2g0w0v9',
+      sourceLayer: 'predios_tarapaca-dn4das',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
         'fill-opacity': 0.5
       },
       popupFields: [
@@ -68,6 +84,182 @@ const config = {
       ]
     },
     {
+      id: 'predios-atacama',
+      name: 'Predios Atacama',
+      category: 'Predios',
+      tilesetId: 'djarav91.83dl4vst',
+      sourceLayer: 'predios_atacama-9bwefw',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-coquimbo',
+      name: 'Predios Coquimbo',
+      category: 'Predios',
+      tilesetId: 'djarav91.djg47f0v',
+      sourceLayer: 'predios_coquimbo-0sx319',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-valparaiso',
+      name: 'Predios Valparaíso',
+      category: 'Predios',
+      tilesetId: 'djarav91.cgg249f4',
+      sourceLayer: 'predios_valparaiso-75fclz',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-ohiggins',
+      name: "Predios O'higgins",
+      category: 'Predios',
+      tilesetId: 'djarav91.6k64zmxc',
+      sourceLayer: 'predios_ohiggins-5dsceq',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-maule',
+      name: 'Predios Maule',
+      category: 'Predios',
+      tilesetId: 'djarav91.bg8n6d2v',
+      sourceLayer: 'predios_maule-7y9m3k',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-nuble',
+      name: 'Predios Ñuble',
+      category: 'Predios',
+      tilesetId: 'djarav91.80mios6c',
+      sourceLayer: 'predios_nuble-7rhpey',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-biobio',
+      name: 'Predios Biobío',
+      category: 'Predios',
+      tilesetId: 'djarav91.5xfklnuq',
+      sourceLayer: 'predios_biobio-53epuq',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-araucania',
+      name: 'Predios La Araucanía',
+      category: 'Predios',
+      tilesetId: 'djarav91.3j46o3kh',
+      sourceLayer: 'predios_araucania-d3cw1d',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-los-rios',
+      name: 'Predios Los Ríos',
+      category: 'Predios',
+      tilesetId: 'djarav91.3aa5cwqp',
+      sourceLayer: 'predios_los_rios-7ywitm',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-los-lagos',
+      name: 'Predios Los Lagos',
+      category: 'Predios',
+      tilesetId: 'djarav91.2kjrqd8x',
+      sourceLayer: 'predios_los_lagos-aj2vy7',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
+      id: 'predios-aysen',
+      name: 'Predios Aysén',
+      category: 'Predios',
+      tilesetId: 'djarav91.35awsw0o',
+      sourceLayer: 'predios_aysen-5j3nne',
+      type: 'fill',
+      paint: {
+        'fill-color': '#a78bfa',
+        'fill-opacity': 0.5
+      },
+      popupFields: [
+        { field: 'comuna', label: 'Comuna' },
+        { field: 'area_metros2', label: 'Área (m²)' }
+      ]
+    },
+    {
       id: 'predios-magallanes',
       name: 'Predios Magallanes',
       category: 'Predios',
@@ -75,7 +267,7 @@ const config = {
       sourceLayer: 'predios_magallanes-5ydzq2',
       type: 'fill',
       paint: {
-        'fill-color': '#c4b5fd',
+        'fill-color': '#a78bfa',
         'fill-opacity': 0.5
       },
       popupFields: [
