@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa Interactivo - Chile</title>
+    
+    <!-- Mapbox GL JS -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css' rel='stylesheet' />
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="map"></div>
+    
+    <!-- Selector estilo de mapa -->
+    <div class="basemap-selector">
+      <button class="basemap-toggle" id="basemapToggle">
+      🗺️ Estilo de Mapa
+      </button>
+      <div class="basemap-dropdown" id="basemapDropdown">
+       <button class="basemap-option active" data-style="mapbox://styles/mapbox/streets-v12">
+        🗺️ Calles
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/outdoors-v12">
+        🏔️ Relieve
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/satellite-v9">
+        🛰️ Satélite
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/satellite-streets-v12">
+        🌍 Híbrido
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/light-v11">
+        ⚪ Claro
+       </button>
+       <button class="basemap-option" data-style="mapbox://styles/mapbox/dark-v11">
+        ⚫ Oscuro
+       </button>
+     </div>
+   </div>
+  
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p>Cargando mapa...</p>
+    </div>
+    
+    <div id="control-panel" class="filter-panel-comuna">
+        <div class="filter-header">
+            <h3>Capas del Mapa</h3>
+            <button id="closeLayersPanel" class="close-btn">×</button>
+        </div>
+    
+        <div class="filter-content">
+            <p id="layerCount" style="color: #6b7280; font-size: 13px; margin-bottom: 8px;">18 capas disponibles</p>
+
+            <!-- Checkbox para seleccionar todas -->
+            <div style="padding: 8px 0 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 12px;">
+              <label style="display: flex; align-items: center; cursor: pointer; color: #60a5fa; font-weight: 600; font-size: 14px;">
+                <input type="checkbox" id="selectAllLayers" style="margin-right: 8px; cursor: pointer; width: 16px; height: 16px;">
+                <span>Seleccionar todas las capas</span>
+              </label>
+            </div>
+            
+            <div id="panelContent">
+                <!-- Las categorías se generarán dinámicamente -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Botón flotante para abrir filtros -->
+    <button id="toggleFilterPanel" class="filter-icon-btn" title="Filtros">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+        </svg>
+        <span id="filterBadge" class="filter-badge-small" style="display: none;">0</span>
+    </button>
+
+    <!-- Botón flotante para capas -->
+    <button id="toggleLayersPanel" class="layers-icon-btn" title="Capas del mapa">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+            <polyline points="2 17 12 22 22 17"></polyline>
+            <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+    </button>  
+    
+    <!-- Panel de Filtros -->
+    <div id="filter-comuna-panel" class="filter-panel-comuna">
+        <div class="filter-header">
+            <h3>Filtros</h3>
+            <button id="closeFilterPanel" class="close-btn">×</button>
+        </div>
+        
+        <div class="filter-content">
+                        
+            <!-- ==========================================
+                 FILTRO POR COMUNA
+                 ========================================== -->
+            <div class="filter-section">
+                                
+                <!-- Resumen de filtros activos -->
+                <div id="comunaSummary" class="filter-summary">
+                    <span><strong id="comunaFilterCount">0</strong> comuna(s) seleccionada(s)</span>
+                    <button id="clearAllComunas">Limpiar</button>
+                </div>
+                
+                <!-- Buscador de comunas -->
+                <div class="search-section">
+                    <label>Buscar Comuna <span class="label-hint">(Activar capa primero 💡)</span></label>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="comunaSearchInput" 
+                            placeholder="Escribe para buscar..."
+                            autocomplete="off"
+                        >
+                        <button id="clearComunaSearch" class="clear-search">×</button>
+                        
+                        <!-- Dropdown de sugerencias -->
+                        <div id="comunaDropdown" class="dropdown">
+                            <div id="comunaDropdownContent"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tags de comunas seleccionadas -->
+                    <div id="selectedComunasTags" class="selected-tags"></div>
+                </div>
+            </div>
+            
+            <!-- ==========================================
+                 FILTRO DE SITIOS PRIORIZADOS
+                 ========================================== -->
+            <div class="filter-section sitios-filter">
+                <h4>⚠️ Filtro Sitios Priorizados</h4>
+                <p class="filter-note-small">Este filtro se aplica exclusivamente a la capa de Sitios Priorizados</p>
+                
+                <!-- Nombre SPPC -->
+                <div class="search-section">
+                    <label>Nombre SPPC:</label>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-nombre-search" 
+                            class="filter-input" 
+                            placeholder="Buscar nombre..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('nombre')">×</button>
+                        <div class="dropdown" id="sitios-nombre-dropdown">
+                            <div id="sitios-nombre-content"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Empresa/Titular -->
+                <div class="search-section">
+                    <label>Empresa/Titular:</label>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-empresa-search" 
+                            class="filter-input" 
+                            placeholder="Buscar empresa..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('empresa')">×</button>
+                        <div class="dropdown" id="sitios-empresa-dropdown">
+                            <div id="sitios-empresa-content"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Actividad Contaminante -->
+                <div class="search-section">
+                    <label>Actividad Contaminante:</label>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-actividad-search" 
+                            class="filter-input" 
+                            placeholder="Buscar actividad..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('actividad')">×</button>
+                        <div class="dropdown" id="sitios-actividad-dropdown">
+                            <div id="sitios-actividad-content"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Proceso Industrial -->
+                <div class="search-section">
+                    <label>Proceso Industrial:</label>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-proceso-search" 
+                            class="filter-input" 
+                            placeholder="Buscar proceso..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('proceso')">×</button>
+                        <div class="dropdown" id="sitios-proceso-dropdown">
+                            <div id="sitios-proceso-content"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Contaminante -->
+                <div class="search-section">
+                    <label>Contaminante:</label>
+                    <div class="search-container">
+                        <input 
+                            type="text" 
+                            id="sitios-contaminante-search" 
+                            class="filter-input" 
+                            placeholder="Buscar contaminante..."
+                            autocomplete="off"
+                        >
+                        <button class="clear-search" onclick="clearSitiosSearch('contaminante')">×</button>
+                        <div class="dropdown" id="sitios-contaminante-dropdown">
+                            <div id="sitios-contaminante-content"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tags de filtros seleccionados -->
+                <div id="selected-sitios-filters" class="selected-filters"></div>
+            </div>
+        </div>
+        
+        <!-- Footer con botón aplicar -->
+        <div class="filter-footer">
+            <button id="applyFiltersBtn" class="apply-btn">Aplicar Filtros</button>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="js/app.js?v=2"></script>
+</body>
+</html>
