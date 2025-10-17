@@ -1,7 +1,7 @@
    // Version 2.0 - 2025-01-15
 // Configuración embebida
 const config = {
-  mapboxToken: 'YOUR_MAPBOX_TOKEN_PLACEHOLDER',
+  mapboxToken: 'pk.eyJ1IjoiZGphcmF2OTEiLCJhIjoiY21ncG5zdDl3MmdrejJvb3Z2MHV4dDd6ZSJ9.XGqigZeRUqaqvVCtt-93bA',
   mapStyle: 'mapbox://styles/mapbox/dark-v11',
   center: [-71.5430, -33.0472],
   zoom: 5,
